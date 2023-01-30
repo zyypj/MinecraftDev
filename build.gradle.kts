@@ -18,51 +18,36 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import org.cadixdev.gradle.licenser.header.HeaderStyle
-import org.cadixdev.gradle.licenser.tasks.LicenseUpdate
 import org.gradle.internal.jvm.Jvm
 import org.jetbrains.changelog.Changelog
 import org.jetbrains.gradle.ext.settings
 import org.jetbrains.gradle.ext.taskTriggers
 import org.jetbrains.intellij.tasks.PrepareSandboxTask
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-import org.jlleitschuh.gradle.ktlint.tasks.BaseKtLintCheckTask
-import org.jlleitschuh.gradle.ktlint.tasks.KtLintFormatTask
 
 plugins {
-    kotlin("jvm") version "1.9.20"
     java
-    mcdev
     groovy
     idea
-    id("org.jetbrains.intellij") version "1.17.2"
-    id("org.cadixdev.licenser")
-    id("org.jlleitschuh.gradle.ktlint") version "10.3.0"
-    id("org.jetbrains.changelog") version "2.2.0"
+    id(libs.plugins.kotlin.get().pluginId)
+    id(libs.plugins.intellij.get().pluginId)
+    id(libs.plugins.licenser.get().pluginId)
+    id(libs.plugins.ktlint.get().pluginId)
+    id(libs.plugins.changelog.get().pluginId)
+    `mcdev-core`
+    `mcdev-parsing`
+    `mcdev-publishing`
 }
 
 val ideaVersionName: String by project
 val coreVersion: String by project
-val pluginTomlVersion: String by project
 
 val gradleToolingExtension: Configuration by configurations.creating
 val testLibs: Configuration by configurations.creating {
     isTransitive = false
 }
 
-group = "com.demonwav.minecraft-dev"
+group = "com.demonwav.mcdev"
 version = "$ideaVersionName-$coreVersion"
-
-java {
-    toolchain {
-        languageVersion.set(JavaLanguageVersion.of(17))
-    }
-}
-kotlin {
-    jvmToolchain {
-        languageVersion.set(java.toolchain.languageVersion.get())
-    }
-}
 
 val gradleToolingExtensionSourceSet: SourceSet = sourceSets.create("gradle-tooling-extension") {
     configurations.named(compileOnlyConfigurationName) {
@@ -100,58 +85,19 @@ val externalAnnotationsJar = tasks.register<Jar>("externalAnnotationsJar") {
     archiveFileName.set("externalAnnotations.jar")
 }
 
-repositories {
-    maven("https://repo.denwav.dev/repository/maven-public/")
-    maven("https://maven.fabricmc.net/") {
-        content {
-            includeModule("net.fabricmc", "mapping-io")
-            includeModule("net.fabricmc", "fabric-loader")
-        }
-    }
-    mavenCentral()
-    maven("https://repo.spongepowered.org/maven/") {
-        content {
-            includeGroup("org.spongepowered")
-        }
-    }
-    maven("https://hub.spigotmc.org/nexus/content/repositories/snapshots/") {
-        content {
-            includeGroup("org.spigotmc")
-        }
-    }
-    maven("https://oss.sonatype.org/content/repositories/snapshots/") {
-        content {
-            includeGroup("net.md-5")
-        }
-    }
-}
-
 dependencies {
     // Add tools.jar for the JDI API
     implementation(files(Jvm.current().toolsJar))
 
+    implementation(files(gradleToolingExtensionJar))
+
     implementation(libs.mixinExtras.expressions)
     testLibs(libs.mixinExtras.common)
-
-    // Kotlin
-    implementation(kotlin("stdlib-jdk8"))
-    implementation(kotlin("reflect"))
-    implementation(libs.bundles.coroutines)
-
-    implementation(files(gradleToolingExtensionJar))
 
     implementation(libs.mappingIo)
     implementation(libs.bundles.asm)
 
     implementation(libs.bundles.fuel)
-
-    jflex(libs.jflex.lib)
-    jflexSkeleton(libs.jflex.skeleton) {
-        artifact {
-            extension = "skeleton"
-        }
-    }
-    grammarKit(libs.grammarKit)
 
     testLibs(libs.test.mockJdk)
     testLibs(libs.test.mixin)
@@ -197,7 +143,7 @@ dependencies {
         to.attribute(filtered, true).attribute(artifactType, "jar")
 
         parameters {
-            ideaVersion.set(providers.gradleProperty("ideaVersion"))
+            ideaVersion.set(libs.versions.intellij.ide)
             ideaVersionName.set(providers.gradleProperty("ideaVersionName"))
             depsFile.set(layout.projectDirectory.file(".gradle/intellij-deps.json"))
         }
@@ -215,8 +161,6 @@ changelog {
 }
 
 intellij {
-    // IntelliJ IDEA dependency
-    version.set(providers.gradleProperty("ideaVersion"))
     // Bundled plugin dependencies
     plugins.addAll(
         "java",
@@ -224,7 +168,6 @@ intellij {
         "gradle",
         "Groovy",
         "Kotlin",
-        "org.toml.lang:$pluginTomlVersion",
         "ByteCodeViewer",
         "org.intellij.intelliLang",
         "properties",
@@ -232,13 +175,9 @@ intellij {
         // needed dependencies for unit tests
         "junit"
     )
+    plugins.addProvider(libs.versions.pluginToml.map { "org.toml.lang:$it" })
 
     pluginName.set("Minecraft Development")
-    updateSinceUntilBuild.set(true)
-
-    downloadSources.set(providers.gradleProperty("downloadIdeaSources").map { it.toBoolean() })
-
-    sandboxDir.set(layout.projectDirectory.dir(".sandbox").toString())
 }
 
 tasks.patchPluginXml {
@@ -246,34 +185,8 @@ tasks.patchPluginXml {
     changeNotes = changelog.render(Changelog.OutputType.HTML)
 }
 
-tasks.publishPlugin {
-    // Build numbers are used for
-    properties["buildNumber"]?.let { buildNumber ->
-        project.version = "${project.version}-$buildNumber"
-    }
-    properties["mcdev.deploy.token"]?.let { deployToken ->
-        token.set(deployToken.toString())
-    }
-    channels.add(properties["mcdev.deploy.channel"]?.toString() ?: "Stable")
-}
-
 tasks.runPluginVerifier {
     ideVersions.addAll("IC-$ideaVersionName")
-}
-
-tasks.withType<JavaCompile>().configureEach {
-    options.encoding = "UTF-8"
-    options.compilerArgs = listOf("-proc:none")
-    options.release.set(17)
-}
-
-tasks.withType<KotlinCompile>().configureEach {
-    kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_17.toString()
-        // K2 causes the following error: https://youtrack.jetbrains.com/issue/KT-52786
-        freeCompilerArgs = listOf(/*"-Xuse-k2", */"-Xjvm-default=all", "-Xjdk-release=17")
-        kotlinDaemonJvmArguments.add("-Xmx2G")
-    }
 }
 
 // Compile classes to be loaded into the Gradle VM to Java 5 to match Groovy
@@ -311,10 +224,11 @@ tasks.processResources {
 
 tasks.test {
     dependsOn(tasks.jar, testLibs)
-    useJUnitPlatform()
 
-    testLibs.resolvedConfiguration.resolvedArtifacts.forEach {
-        systemProperty("testLibs.${it.name}", it.file.absolutePath)
+    doFirst {
+        testLibs.resolvedConfiguration.resolvedArtifacts.forEach {
+            systemProperty("testLibs.${it.name}", it.file.absolutePath)
+        }
     }
     systemProperty("NO_FS_ROOTS_ACCESS_CHECK", "true")
     systemProperty("java.awt.headless", "true")
@@ -327,19 +241,9 @@ tasks.test {
 
 idea {
     project.settings.taskTriggers.afterSync("generate")
-    module {
-        generatedSourceDirs.add(file("build/gen"))
-        excludeDirs.add(file(intellij.sandboxDir.get()))
-        isDownloadJavadoc = true
-        isDownloadSources = true
-    }
 }
 
 license {
-    header.set(resources.text.fromFile(file("copyright.txt")))
-    style["flex"] = HeaderStyle.BLOCK_COMMENT.format
-    style["bnf"] = HeaderStyle.BLOCK_COMMENT.format
-
     val endings = listOf("java", "kt", "kts", "groovy", "gradle.kts", "xml", "properties", "html", "flex", "bnf")
     exclude("META-INF/plugin.xml") // https://youtrack.jetbrains.com/issue/IDEA-345026
     include(endings.map { "**/*.$it" })
@@ -385,19 +289,6 @@ license {
     }
 }
 
-ktlint {
-    disabledRules.add("filename")
-}
-tasks.withType<BaseKtLintCheckTask>().configureEach {
-    workerMaxHeapSize.set("512m")
-}
-
-tasks.register("format") {
-    group = "minecraft"
-    description = "Formats source code according to project style"
-    dependsOn(tasks.withType<LicenseUpdate>(), tasks.withType<KtLintFormatTask>())
-}
-
 val generateAtLexer by lexer("AtLexer", "com/demonwav/mcdev/platform/mcp/at/gen")
 val generateAtParser by parser("AtParser", "com/demonwav/mcdev/platform/mcp/at/gen")
 
@@ -441,12 +332,6 @@ sourceSets.main { java.srcDir(generate) }
 
 // Remove gen directory on clean
 tasks.clean { delete(generate) }
-
-tasks.register("cleanSandbox", Delete::class) {
-    group = "intellij"
-    description = "Deletes the sandbox directory."
-    delete(layout.projectDirectory.dir(".sandbox"))
-}
 
 tasks.withType<PrepareSandboxTask> {
     pluginJar.set(tasks.jar.get().archiveFile)

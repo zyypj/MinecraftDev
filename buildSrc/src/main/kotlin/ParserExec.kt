@@ -62,6 +62,7 @@ abstract class ParserExec : JavaExec() {
     init {
         mainClass.set("org.intellij.grammar.Main")
 
+        @Suppress("LeakingThis")
         jvmArgs(
             "--add-opens", "java.base/java.lang=ALL-UNNAMED",
             "--add-opens", "java.base/java.lang.reflect=ALL-UNNAMED",

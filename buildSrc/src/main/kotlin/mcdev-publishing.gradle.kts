@@ -18,12 +18,17 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-rootProject.name = "buildSrc"
+plugins {
+    id("org.jetbrains.intellij")
+}
 
-dependencyResolutionManagement {
-    versionCatalogs {
-        create("libs") {
-            from(files("../gradle/libs.versions.toml"))
-        }
+tasks.publishPlugin {
+    // Build numbers are used for nightlies
+    properties["buildNumber"]?.let { buildNumber ->
+        project.version = "${project.version}-$buildNumber"
     }
+    properties["mcdev.deploy.token"]?.let { deployToken ->
+        token.set(deployToken.toString())
+    }
+    channels.add(properties["mcdev.deploy.channel"]?.toString() ?: "Stable")
 }

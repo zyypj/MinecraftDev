@@ -18,12 +18,29 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-rootProject.name = "buildSrc"
+import org.gradle.accessors.dm.LibrariesForLibs
 
-dependencyResolutionManagement {
-    versionCatalogs {
-        create("libs") {
-            from(files("../gradle/libs.versions.toml"))
+plugins {
+    idea
+}
+
+val jflex: Configuration by configurations.creating
+val jflexSkeleton: Configuration by configurations.creating
+val grammarKit: Configuration by configurations.creating
+
+val libs = the<LibrariesForLibs>()
+dependencies {
+    jflex(libs.jflex.lib)
+    jflexSkeleton(libs.jflex.skeleton) {
+        artifact {
+            extension = "skeleton"
         }
+    }
+    grammarKit(libs.grammarKit)
+}
+
+idea {
+    module {
+        generatedSourceDirs.add(file("build/gen"))
     }
 }

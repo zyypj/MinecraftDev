@@ -102,13 +102,9 @@
                   implements="com.demonwav.mcdev.creator.custom.finalizers.CreatorFinalizer"/>
         </extensionPoint>
 
-        <extensionPoint name="mixinSelectorParser"
-                        interface="com.demonwav.mcdev.platform.mixin.reference.MixinSelectorParser" dynamic="true"/>
-        <extensionPoint name="mixinAnnotationHandler"
-                        beanClass="com.demonwav.mcdev.platform.mixin.handlers.MixinAnnotationHandlerInfo"
-                        dynamic="true">
-            <with attribute="implementation"
-                  implements="com.demonwav.mcdev.platform.mixin.handlers.MixinAnnotationHandler"/>
+        <extensionPoint name="mixinSelectorParser" interface="com.demonwav.mcdev.platform.mixin.reference.MixinSelectorParser" dynamic="true"/>
+        <extensionPoint name="mixinAnnotationHandler" beanClass="com.demonwav.mcdev.platform.mixin.handlers.MixinAnnotationHandlerInfo" dynamic="true">
+            <with attribute="implementation" implements="com.demonwav.mcdev.platform.mixin.handlers.MixinAnnotationHandler"/>
         </extensionPoint>
         <extensionPoint name="injectionPoint"
                         beanClass="com.demonwav.mcdev.platform.mixin.handlers.injectionPoint.InjectionPointInfo"
