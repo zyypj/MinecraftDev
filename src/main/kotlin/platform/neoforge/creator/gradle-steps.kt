@@ -71,6 +71,7 @@ class NeoForgeGradleFilesStep(parent: NewProjectWizardStep) : AbstractLongRunnin
     override fun setupAssets(project: Project) {
         val mcVersion = data.getUserData(NeoForgeVersionChainStep.MC_VERSION_KEY) ?: return
         val neoforgeVersion = data.getUserData(NeoForgeVersionChainStep.NEOFORGE_VERSION_KEY) ?: return
+        val neogradleVersion = data.getUserData(NeoForgeVersionChainStep.NEOGRADLE_VERSION_KEY) ?: return
         val modId = data.getUserData(AbstractModIdStep.KEY) ?: return
         val modName = data.getUserData(AbstractModNameStep.KEY) ?: return
         val buildSystemProps = findStep<BuildSystemPropertiesStep<*>>()
@@ -95,6 +96,7 @@ class NeoForgeGradleFilesStep(parent: NewProjectWizardStep) : AbstractLongRunnin
             "MC_NEXT_VERSION" to mcNextVersion,
             "NEOFORGE_VERSION" to neoforgeVersion,
             "NEOFORGE_SPEC_VERSION" to neoforgeVersion.parts[0].versionString,
+            "NEOGRADLE_VERSION" to neogradleVersion,
             "GROUP_ID" to buildSystemProps.groupId,
             "ARTIFACT_ID" to buildSystemProps.artifactId,
             "MOD_VERSION" to buildSystemProps.version,
