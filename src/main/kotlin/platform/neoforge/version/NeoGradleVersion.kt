@@ -37,6 +37,7 @@ class NeoGradleVersion private constructor(val versions: List<SemanticVersion>) 
                     .asSequence()
                     .mapNotNull(SemanticVersion.Companion::tryParse)
                     .sortedDescending()
+                    .take(50)
                     .toList()
                 return NeoGradleVersion(versions)
             } catch (e: IOException) {
