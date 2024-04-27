@@ -275,7 +275,12 @@ class MinecraftTemplates : FileTemplateGroupDescriptorFactory {
         const val NEOFORGE_GRADLE_PROPERTIES_TEMPLATE = "NeoForge gradle.properties"
         const val NEOFORGE_SETTINGS_GRADLE_TEMPLATE = "NeoForge settings.gradle"
         const val NEOFORGE_MODS_TOML_TEMPLATE = "NeoForge mods.toml"
+        const val NEOFORGE_NEOFORGE_MODS_TOML_TEMPLATE = "NeoForge neoforge.mods.toml"
         const val NEOFORGE_PACK_MCMETA_TEMPLATE = "NeoForge pack.mcmeta"
+
+        const val NEOFORGE_1_20_5_MAIN_CLASS_TEMPLATE = "NeoForge (1.20.5) Main Class.java"
+        const val NEOFORGE_1_20_5_CONFIG_TEMPLATE = "NeoForge (1.20.5) Config.java"
+        const val NEOFORGE_1_20_5_BUILD_GRADLE_TEMPLATE = "NeoForge (1.20.5) build.gradle"
 
         const val NEOFORGE_BLOCK_TEMPLATE = "NeoForgeBlock.java"
         const val NEOFORGE_ITEM_TEMPLATE = "NeoForgeItem.java"

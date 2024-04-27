@@ -41,6 +41,7 @@ import com.demonwav.mcdev.creator.step.DescriptionStep
 import com.demonwav.mcdev.creator.step.LicenseStep
 import com.demonwav.mcdev.creator.step.NewProjectWizardChainStep.Companion.nextStep
 import com.demonwav.mcdev.util.MinecraftTemplates
+import com.demonwav.mcdev.util.MinecraftVersions
 import com.demonwav.mcdev.util.SemanticVersion
 import com.intellij.ide.wizard.NewProjectWizardStep
 import com.intellij.openapi.application.WriteAction
@@ -49,7 +50,7 @@ import com.intellij.openapi.vfs.LocalFileSystem
 import com.intellij.openapi.vfs.VfsUtil
 import com.intellij.util.lang.JavaVersion
 
-private val ngWrapperVersion = SemanticVersion.release(8, 6)
+private val ngWrapperVersion = SemanticVersion.release(8, 7)
 
 const val MAGIC_RUN_CONFIGS_FILE = ".hello_from_mcdev"
 
@@ -117,13 +118,14 @@ class NeoForgeGradleFilesStep(parent: NewProjectWizardStep) : AbstractLongRunnin
             assets.addTemplateProperties("JAVA_VERSION" to javaVersion.feature)
         }
 
-        if (neoforgeVersion >= SemanticVersion.release(39, 0, 88)) {
-            assets.addTemplateProperties("GAME_TEST_FRAMEWORK" to "true")
+        val buildGradleTemplate = when {
+            mcVersion >= MinecraftVersions.MC1_20_5 -> MinecraftTemplates.NEOFORGE_1_20_5_BUILD_GRADLE_TEMPLATE
+            else -> MinecraftTemplates.NEOFORGE_BUILD_GRADLE_TEMPLATE
         }
 
         assets.addTemplates(
             project,
-            "build.gradle" to MinecraftTemplates.NEOFORGE_BUILD_GRADLE_TEMPLATE,
+            "build.gradle" to buildGradleTemplate,
             "gradle.properties" to MinecraftTemplates.NEOFORGE_GRADLE_PROPERTIES_TEMPLATE,
             "settings.gradle" to MinecraftTemplates.NEOFORGE_SETTINGS_GRADLE_TEMPLATE,
         )
