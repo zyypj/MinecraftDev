@@ -20,6 +20,7 @@
 
 package com.demonwav.mcdev.translations.sorting
 
+import com.demonwav.mcdev.TranslationSettings
 import com.demonwav.mcdev.asset.MCDevBundle
 import com.demonwav.mcdev.translations.lang.colors.LangSyntaxHighlighter
 import com.intellij.codeInsight.template.impl.TemplateEditorUtil
@@ -32,7 +33,13 @@ import com.intellij.openapi.editor.ex.util.LexerEditorHighlighter
 import com.intellij.openapi.options.Configurable
 import com.intellij.openapi.project.Project
 import com.intellij.ui.dsl.builder.Align
+import com.intellij.ui.dsl.builder.COLUMNS_LARGE
+import com.intellij.ui.dsl.builder.bindSelected
+import com.intellij.ui.dsl.builder.bindText
+import com.intellij.ui.dsl.builder.columns
 import com.intellij.ui.dsl.builder.panel
+import com.intellij.ui.dsl.builder.selected
+import com.intellij.ui.layout.ComponentPredicate
 import com.intellij.util.ui.JBUI
 import java.awt.BorderLayout
 import javax.swing.DefaultComboBoxModel
@@ -46,7 +53,7 @@ class TranslationTemplateConfigurable(private val project: Project) : Configurab
     private var templateEditor: Editor? = null
 
     private val editorPanel = JPanel(BorderLayout()).apply {
-        preferredSize = JBUI.size(250, 450)
+        preferredSize = JBUI.size(250, 350)
         minimumSize = preferredSize
     }
 
@@ -61,6 +68,25 @@ class TranslationTemplateConfigurable(private val project: Project) : Configurab
 
         row {
             cell(editorPanel).align(Align.FILL)
+        }
+
+        val translationSettings = TranslationSettings.getInstance(project)
+        row {
+            checkBox(MCDevBundle("minecraft.settings.translation.force_json_translation_file"))
+                .bindSelected(translationSettings::isForceJsonTranslationFile)
+        }
+
+        lateinit var allowConvertToTranslationTemplate: ComponentPredicate
+        row {
+            val checkBox = checkBox(MCDevBundle("minecraft.settings.translation.use_custom_convert_template"))
+                .bindSelected(translationSettings::isUseCustomConvertToTranslationTemplate)
+            allowConvertToTranslationTemplate = checkBox.selected
+        }
+
+        row {
+            textField().bindText(translationSettings::convertToTranslationTemplate)
+                .enabledIf(allowConvertToTranslationTemplate)
+                .columns(COLUMNS_LARGE)
         }
     }
 
@@ -107,7 +133,7 @@ class TranslationTemplateConfigurable(private val project: Project) : Configurab
     }
 
     override fun isModified(): Boolean {
-        return templateEditor?.document?.text != getActiveTemplateText() != false
+        return templateEditor?.document?.text != getActiveTemplateText() != false || panel.isModified()
     }
 
     override fun apply() {
@@ -120,9 +146,12 @@ class TranslationTemplateConfigurable(private val project: Project) : Configurab
         } else if (project != null) {
             TemplateManager.writeProjectTemplate(project, editor.document.text)
         }
+
+        panel.apply()
     }
 
     override fun reset() {
         init()
+        panel.reset()
     }
 }
