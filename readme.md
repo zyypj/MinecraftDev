@@ -25,7 +25,7 @@ Minecraft Development for IntelliJ
     </tr>
     <tr>
         <td align="left">2024.2</td>
-        <td align="left"><a href="https://ci.mcdev.io/viewType.html?buildTypeId=MinecraftDev_Nightly_20242"><img src="https://ci.mcdev.io/app/rest/builds/buildType:(id:MinecraftDev_Nightly_20242)/statusIcon.svg" alt="2024.3 Nightly Status" /></a></td>
+        <td align="left"><a href="https://ci.mcdev.io/viewType.html?buildTypeId=MinecraftDev_Nightly_20242"><img src="https://ci.mcdev.io/app/rest/builds/buildType:(id:MinecraftDev_Nightly_20242)/statusIcon.svg" alt="2024.2 Nightly Status" /></a></td>
     </tr>
     <tr>
         <td align="right"><b>OS Tests</b></td>
