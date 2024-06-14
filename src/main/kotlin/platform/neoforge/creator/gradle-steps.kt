@@ -87,6 +87,10 @@ class NeoForgeGradleFilesStep(parent: NewProjectWizardStep) : AbstractLongRunnin
         } else {
             mcVersion
         }
+        val loaderVersion = when {
+            mcVersion < MinecraftVersions.MC1_21 -> "2"
+            else -> "4"
+        }
 
         data.putUserData(GRADLE_VERSION_KEY, ngWrapperVersion)
 
@@ -97,6 +101,7 @@ class NeoForgeGradleFilesStep(parent: NewProjectWizardStep) : AbstractLongRunnin
             "MC_NEXT_VERSION" to mcNextVersion,
             "NEOFORGE_VERSION" to neoforgeVersion,
             "NEOFORGE_SPEC_VERSION" to neoforgeVersion.parts[0].versionString,
+            "LOADER_VERSION" to loaderVersion,
             "NEOGRADLE_VERSION" to neogradleVersion,
             "GROUP_ID" to buildSystemProps.groupId,
             "ARTIFACT_ID" to buildSystemProps.artifactId,

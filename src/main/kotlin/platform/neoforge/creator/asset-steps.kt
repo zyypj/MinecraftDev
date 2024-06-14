@@ -122,6 +122,7 @@ class NeoForgeProjectFilesStep(parent: NewProjectWizardStep) : AbstractLongRunni
         )
 
         val configClassTemplate = when {
+            mcVersion >= MinecraftVersions.MC1_21 -> MinecraftTemplates.NEOFORGE_1_21_CONFIG_TEMPLATE
             mcVersion >= MinecraftVersions.MC1_20_5 -> MinecraftTemplates.NEOFORGE_1_20_5_CONFIG_TEMPLATE
             else -> MinecraftTemplates.NEOFORGE_CONFIG_TEMPLATE
         }
