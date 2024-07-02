@@ -83,6 +83,7 @@ repositories {
     maven("https://maven.fabricmc.net/") {
         content {
             includeModule("net.fabricmc", "mapping-io")
+            includeModule("net.fabricmc", "fabric-loader")
         }
     }
     mavenCentral()
@@ -119,6 +120,7 @@ dependencies {
             classifier = "shaded"
         }
     }
+    testLibs(libs.test.fabricloader)
     testLibs(libs.test.nbt) {
         artifact {
             extension = "nbt"
