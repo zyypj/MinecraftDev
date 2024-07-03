@@ -343,7 +343,10 @@ val generateNbttParser by parser("NbttParser", "com/demonwav/mcdev/nbt/lang/gen"
 val generateLangLexer by lexer("LangLexer", "com/demonwav/mcdev/translations/lang/gen")
 val generateLangParser by parser("LangParser", "com/demonwav/mcdev/translations/lang/gen")
 
-val generateTranslationTemplateLexer by lexer("TranslationTemplateLexer", "com/demonwav/mcdev/translations/lang/gen")
+val generateTranslationTemplateLexer by lexer(
+    "TranslationTemplateLexer",
+    "com/demonwav/mcdev/translations/template/gen"
+)
 
 val generate by tasks.registering {
     group = "minecraft"
