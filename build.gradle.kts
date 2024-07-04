@@ -398,3 +398,11 @@ tasks.buildSearchableOptions {
     // not working atm
     enabled = false
 }
+
+tasks.instrumentCode {
+    enabled = false
+}
+
+tasks.instrumentedJar {
+    enabled = false
+}
