@@ -20,6 +20,7 @@
 
 package com.demonwav.mcdev.translations.sorting
 
+import com.demonwav.mcdev.asset.MCDevBundle
 import com.demonwav.mcdev.translations.lang.colors.LangSyntaxHighlighter
 import com.intellij.codeInsight.template.impl.TemplateEditorUtil
 import com.intellij.ide.DataManager
@@ -30,6 +31,8 @@ import com.intellij.openapi.editor.ex.EditorEx
 import com.intellij.openapi.editor.ex.util.LexerEditorHighlighter
 import com.intellij.openapi.options.Configurable
 import com.intellij.openapi.project.Project
+import com.intellij.ui.dsl.builder.Align
+import com.intellij.ui.dsl.builder.panel
 import com.intellij.util.ui.JBUI
 import java.awt.BorderLayout
 import javax.swing.DefaultComboBoxModel
@@ -39,32 +42,47 @@ import javax.swing.JPanel
 import org.jetbrains.annotations.Nls
 
 class TranslationTemplateConfigurable(private val project: Project) : Configurable {
-    private lateinit var panel: JPanel
     private lateinit var cmbScheme: JComboBox<String>
-    private lateinit var editorPanel: JPanel
-    private lateinit var templateEditor: Editor
+    private var templateEditor: Editor? = null
+
+    private val editorPanel = JPanel(BorderLayout()).apply {
+        preferredSize = JBUI.size(250, 450)
+        minimumSize = preferredSize
+    }
+
+    private val panel = panel {
+        row(MCDevBundle("minecraft.settings.lang_template.scheme")) {
+            cmbScheme = comboBox(emptyList<String>()).component
+        }
+
+        row {
+            label(MCDevBundle("minecraft.settings.lang_template.comment"))
+        }
+
+        row {
+            cell(editorPanel).align(Align.FILL)
+        }
+    }
 
     @Nls
-    override fun getDisplayName() = "Localization Template"
+    override fun getDisplayName() = MCDevBundle("minecraft.settings.lang_template.display_name")
 
     override fun getHelpTopic(): String? = null
 
-    override fun createComponent(): JComponent {
-        return panel
-    }
+    override fun createComponent(): JComponent = panel
 
     private fun getActiveTemplateText() =
         when {
             cmbScheme.selectedIndex == 0 -> TemplateManager.getGlobalTemplateText()
             !project.isDefault -> TemplateManager.getProjectTemplateText(project)
-            else -> "You must have selected a project for this!"
+            else -> MCDevBundle("minecraft.settings.lang_template.project_must_be_selected")
         }
 
     private fun init() {
         if (project.isDefault) {
-            cmbScheme.selectedIndex = 0
             cmbScheme.model = DefaultComboBoxModel(arrayOf("Global"))
-        } else if (cmbScheme.selectedIndex == 0) {
+            cmbScheme.selectedIndex = 0
+        } else {
             cmbScheme.model = DefaultComboBoxModel(arrayOf("Global", "Project"))
         }
         cmbScheme.addActionListener {
@@ -82,24 +100,25 @@ class TranslationTemplateConfigurable(private val project: Project) : Configurab
             editorColorsScheme,
         )
         (templateEditor as EditorEx).highlighter = highlighter
-        templateEditor.settings.isLineNumbersShown = true
+        templateEditor!!.settings.isLineNumbersShown = true
 
-        editorPanel.preferredSize = JBUI.size(250, 100)
-        editorPanel.minimumSize = editorPanel.preferredSize
         editorPanel.removeAll()
-        editorPanel.add(templateEditor.component, BorderLayout.CENTER)
+        editorPanel.add(templateEditor!!.component, BorderLayout.CENTER)
     }
 
     override fun isModified(): Boolean {
-        return templateEditor.document.text != getActiveTemplateText()
+        return templateEditor?.document?.text != getActiveTemplateText() != false
     }
 
     override fun apply() {
+        val editor = templateEditor
+            ?: return
+
         val project = CommonDataKeys.PROJECT.getData(DataManager.getInstance().getDataContext(panel))
         if (cmbScheme.selectedIndex == 0) {
-            TemplateManager.writeGlobalTemplate(templateEditor.document.text)
+            TemplateManager.writeGlobalTemplate(editor.document.text)
         } else if (project != null) {
-            TemplateManager.writeProjectTemplate(project, templateEditor.document.text)
+            TemplateManager.writeProjectTemplate(project, editor.document.text)
         }
     }
 
