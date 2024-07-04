@@ -377,6 +377,7 @@ tasks.register("cleanSandbox", Delete::class) {
 }
 
 tasks.withType<PrepareSandboxTask> {
+    pluginJar.set(tasks.jar.get().archiveFile)
     from(externalAnnotationsJar) {
         into("Minecraft Development/lib/resources")
     }
