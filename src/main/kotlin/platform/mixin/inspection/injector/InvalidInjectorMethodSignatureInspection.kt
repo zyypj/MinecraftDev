@@ -34,6 +34,7 @@ import com.demonwav.mcdev.platform.mixin.util.isConstructor
 import com.demonwav.mcdev.platform.mixin.util.isMixinExtrasSugar
 import com.demonwav.mcdev.util.Parameter
 import com.demonwav.mcdev.util.fullQualifiedName
+import com.demonwav.mcdev.util.normalize
 import com.demonwav.mcdev.util.synchronize
 import com.intellij.codeInsight.intention.FileModifier.SafeFieldForPreview
 import com.intellij.codeInsight.intention.QuickFixFactory
@@ -46,6 +47,7 @@ import com.intellij.psi.JavaElementVisitor
 import com.intellij.psi.JavaPsiFacade
 import com.intellij.psi.PsiClassType
 import com.intellij.psi.PsiElementVisitor
+import com.intellij.psi.PsiEllipsisType
 import com.intellij.psi.PsiMethod
 import com.intellij.psi.PsiModifier
 import com.intellij.psi.PsiNameHelper
@@ -55,7 +57,6 @@ import com.intellij.psi.PsiType
 import com.intellij.psi.codeStyle.JavaCodeStyleManager
 import com.intellij.psi.codeStyle.VariableKind
 import com.intellij.psi.util.PsiUtil
-import com.intellij.psi.util.TypeConversionUtil
 import org.objectweb.asm.Opcodes
 
 class InvalidInjectorMethodSignatureInspection : MixinInspection() {
@@ -195,13 +196,18 @@ class InvalidInjectorMethodSignatureInspection : MixinInspection() {
                             ) {
                                 reportedSignature = true
 
+                                val normalizedExpected = when (expectedReturnType) {
+                                    is PsiEllipsisType -> expectedReturnType.toArrayType()
+                                    else -> expectedReturnType
+                                }
+
                                 holder.registerProblem(
                                     method.returnTypeElement ?: identifier,
-                                    "Expected return type '${expectedReturnType.presentableText}' " +
+                                    "Expected return type '${normalizedExpected.presentableText}' " +
                                         "for $annotationName method",
                                     QuickFixFactory.getInstance().createMethodReturnFix(
                                         method,
-                                        expectedReturnType,
+                                        normalizedExpected,
                                         false,
                                     ),
                                 )
@@ -218,9 +224,9 @@ class InvalidInjectorMethodSignatureInspection : MixinInspection() {
             method: PsiMethod,
             allowCoerce: Boolean,
         ): Boolean {
-            val expectedErasure = TypeConversionUtil.erasure(expectedReturnType)
-            val returnErasure = TypeConversionUtil.erasure(methodReturnType)
-            if (expectedErasure == returnErasure) {
+            val normalizedExpected = expectedReturnType.normalize()
+            val normalizedReturn = methodReturnType.normalize()
+            if (normalizedExpected == normalizedReturn) {
                 return true
             }
             if (!allowCoerce || !method.hasAnnotation(COERCE)) {
