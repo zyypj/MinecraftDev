@@ -69,7 +69,7 @@ abstract class TranslationIdentifier<T : PsiElement> {
             if (container !is PsiExpressionList) {
                 return null
             }
-            val call = container.parent as? PsiCallExpression ?: return null
+            val call = container.parent as? PsiCall ?: return null
             val index = container.expressions.indexOf(element)
 
             val method = call.referencedMethod ?: return null
