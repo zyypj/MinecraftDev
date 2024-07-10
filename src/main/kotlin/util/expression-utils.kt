@@ -25,6 +25,7 @@ import com.demonwav.mcdev.translations.identification.TranslationInstance.Compan
 import org.jetbrains.uast.UBinaryExpressionWithType
 import org.jetbrains.uast.UCallExpression
 import org.jetbrains.uast.UExpression
+import org.jetbrains.uast.UQualifiedReferenceExpression
 import org.jetbrains.uast.UReferenceExpression
 import org.jetbrains.uast.UVariable
 import org.jetbrains.uast.evaluateString
@@ -42,6 +43,13 @@ fun UExpression.evaluate(allowReferences: Boolean, allowTranslations: Boolean): 
         when {
             expr is UBinaryExpressionWithType && expr.isTypeCast() ->
                 return eval(expr.operand, defaultValue)
+
+            expr is UQualifiedReferenceExpression -> {
+                val selector = expr.selector
+                if (selector is UCallExpression) {
+                    return eval(selector, "\${${expr.asSourceString()}}")
+                }
+            }
 
             expr is UReferenceExpression -> {
                 val reference = expr.resolveToUElement()
