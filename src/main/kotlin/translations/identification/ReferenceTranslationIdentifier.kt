@@ -21,43 +21,34 @@
 package com.demonwav.mcdev.translations.identification
 
 import com.intellij.codeInsight.completion.CompletionUtilCore
-import com.intellij.psi.JavaPsiFacade
-import com.intellij.psi.impl.source.PsiClassReferenceType
-import com.intellij.psi.search.GlobalSearchScope
-import org.jetbrains.uast.UField
+import com.intellij.psi.PsiManager
+import com.intellij.psi.PsiType
 import org.jetbrains.uast.ULiteralExpression
 import org.jetbrains.uast.UReferenceExpression
+import org.jetbrains.uast.UVariable
 import org.jetbrains.uast.resolveToUElement
 
 class ReferenceTranslationIdentifier : TranslationIdentifier<UReferenceExpression>() {
     override fun identify(element: UReferenceExpression): TranslationInstance? {
-        val reference = element.resolveToUElement() ?: return null
         val statement = element.uastParent ?: return null
         val project = element.sourcePsi?.project ?: return null
-
-        if (reference is UField) {
-            val scope = GlobalSearchScope.allScope(project)
-            val stringClass =
-                JavaPsiFacade.getInstance(project).findClass("java.lang.String", scope) ?: return null
-            val isConstant = reference.isStatic && reference.isFinal
-            val type = reference.type as? PsiClassReferenceType ?: return null
-            val resolved = type.resolve() ?: return null
-            if (isConstant && (resolved.isEquivalentTo(stringClass) || resolved.isInheritor(stringClass, true))) {
-                val referenceElement = reference.uastInitializer as? ULiteralExpression ?: return null
-                val result = identify(project, element, statement, referenceElement)
-
-                return result?.copy(
-                    key = result.key.copy(
-                        infix = result.key.infix.replace(
-                            CompletionUtilCore.DUMMY_IDENTIFIER_TRIMMED,
-                            "",
-                        ),
-                    ),
-                )
-            }
+        val reference = element.resolveToUElement() as? UVariable ?: return null
+        if (!reference.isFinal) {
+            return null
         }
 
-        return null
+        val resolveScope = element.sourcePsi?.resolveScope ?: return null
+        val psiManager = PsiManager.getInstance(project)
+        val stringType = PsiType.getJavaLangString(psiManager, resolveScope)
+        if (!stringType.isAssignableFrom(reference.type)) {
+            return null
+        }
+
+        val referenceElement = reference.uastInitializer as? ULiteralExpression ?: return null
+        val result = identify(project, element, statement, referenceElement) ?: return null
+
+        val infix = result.key.infix.replace(CompletionUtilCore.DUMMY_IDENTIFIER_TRIMMED, "")
+        return result.copy(key = result.key.copy(infix = infix))
     }
 
     override fun elementClass(): Class<UReferenceExpression> = UReferenceExpression::class.java
