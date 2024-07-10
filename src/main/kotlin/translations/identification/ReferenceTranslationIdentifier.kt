@@ -23,7 +23,6 @@ package com.demonwav.mcdev.translations.identification
 import com.intellij.codeInsight.completion.CompletionUtilCore
 import com.intellij.psi.PsiManager
 import com.intellij.psi.PsiType
-import org.jetbrains.uast.ULiteralExpression
 import org.jetbrains.uast.UReferenceExpression
 import org.jetbrains.uast.UVariable
 import org.jetbrains.uast.resolveToUElement
@@ -44,7 +43,7 @@ class ReferenceTranslationIdentifier : TranslationIdentifier<UReferenceExpressio
             return null
         }
 
-        val referenceElement = reference.uastInitializer as? ULiteralExpression ?: return null
+        val referenceElement = reference.uastInitializer ?: return null
         val result = identify(project, element, statement, referenceElement) ?: return null
 
         val infix = result.key.infix.replace(CompletionUtilCore.DUMMY_IDENTIFIER_TRIMMED, "")
