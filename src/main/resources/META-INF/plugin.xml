@@ -1213,11 +1213,6 @@
                 description="Lookup MCP mapping info on a SRG field or method">
             <keyboard-shortcut first-keystroke="control alt shift M" keymap="$default"/>
         </action>
-        <action class="com.demonwav.mcdev.translations.actions.ConvertToTranslationAction" id="ConvertToMcTranslationAction"
-                text="Convert String Literal to Translation"
-                description="Converts any string literal into a Minecraft localization translation">
-            <add-to-group relative-to-action="EditorPopupMenu2" anchor="after" group-id="EditorPopupMenu"/>
-        </action>
         <action class="com.demonwav.mcdev.translations.actions.SortTranslationsAction" id="SortMcTranslationsAction"
                 text="Sort Translations by Specified Order"
                 description="Sorts translations by specified order">
