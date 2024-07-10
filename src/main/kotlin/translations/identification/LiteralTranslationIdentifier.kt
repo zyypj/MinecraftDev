@@ -21,13 +21,15 @@
 package com.demonwav.mcdev.translations.identification
 
 import com.intellij.codeInsight.completion.CompletionUtilCore
-import com.intellij.psi.PsiLiteralExpression
+import org.jetbrains.uast.ULiteralExpression
 
-class LiteralTranslationIdentifier : TranslationIdentifier<PsiLiteralExpression>() {
-    override fun identify(element: PsiLiteralExpression): TranslationInstance? {
-        val statement = element.parent
-        if (element.value is String) {
-            val result = identify(element.project, element, statement, element)
+class LiteralTranslationIdentifier : TranslationIdentifier<ULiteralExpression>() {
+    override fun identify(element: ULiteralExpression): TranslationInstance? {
+        val statement = element.uastParent
+        if (statement != null && element.value is String) {
+            val project = element.sourcePsi?.project
+                ?: return null
+            val result = identify(project, element, statement, element)
             return result?.copy(
                 key = result.key.copy(
                     infix = result.key.infix.replace(
@@ -40,5 +42,5 @@ class LiteralTranslationIdentifier : TranslationIdentifier<PsiLiteralExpression>
         return null
     }
 
-    override fun elementClass(): Class<PsiLiteralExpression> = PsiLiteralExpression::class.java
+    override fun elementClass(): Class<ULiteralExpression> = ULiteralExpression::class.java
 }

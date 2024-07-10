@@ -22,29 +22,29 @@ package com.demonwav.mcdev.translations.identification
 
 import com.intellij.codeInsight.completion.CompletionUtilCore
 import com.intellij.psi.JavaPsiFacade
-import com.intellij.psi.PsiField
-import com.intellij.psi.PsiLiteral
-import com.intellij.psi.PsiModifier
-import com.intellij.psi.PsiReferenceExpression
 import com.intellij.psi.impl.source.PsiClassReferenceType
 import com.intellij.psi.search.GlobalSearchScope
+import org.jetbrains.uast.UField
+import org.jetbrains.uast.ULiteralExpression
+import org.jetbrains.uast.UReferenceExpression
+import org.jetbrains.uast.resolveToUElement
 
-class ReferenceTranslationIdentifier : TranslationIdentifier<PsiReferenceExpression>() {
-    override fun identify(element: PsiReferenceExpression): TranslationInstance? {
-        val reference = element.resolve()
-        val statement = element.parent
+class ReferenceTranslationIdentifier : TranslationIdentifier<UReferenceExpression>() {
+    override fun identify(element: UReferenceExpression): TranslationInstance? {
+        val reference = element.resolveToUElement() ?: return null
+        val statement = element.uastParent ?: return null
+        val project = element.sourcePsi?.project ?: return null
 
-        if (reference is PsiField) {
-            val scope = GlobalSearchScope.allScope(element.project)
+        if (reference is UField) {
+            val scope = GlobalSearchScope.allScope(project)
             val stringClass =
-                JavaPsiFacade.getInstance(element.project).findClass("java.lang.String", scope) ?: return null
-            val isConstant =
-                reference.hasModifierProperty(PsiModifier.STATIC) && reference.hasModifierProperty(PsiModifier.FINAL)
+                JavaPsiFacade.getInstance(project).findClass("java.lang.String", scope) ?: return null
+            val isConstant = reference.isStatic && reference.isFinal
             val type = reference.type as? PsiClassReferenceType ?: return null
             val resolved = type.resolve() ?: return null
             if (isConstant && (resolved.isEquivalentTo(stringClass) || resolved.isInheritor(stringClass, true))) {
-                val referenceElement = reference.initializer as? PsiLiteral ?: return null
-                val result = identify(element.project, element, statement, referenceElement)
+                val referenceElement = reference.uastInitializer as? ULiteralExpression ?: return null
+                val result = identify(project, element, statement, referenceElement)
 
                 return result?.copy(
                     key = result.key.copy(
@@ -60,7 +60,5 @@ class ReferenceTranslationIdentifier : TranslationIdentifier<PsiReferenceExpress
         return null
     }
 
-    override fun elementClass(): Class<PsiReferenceExpression> {
-        return PsiReferenceExpression::class.java
-    }
+    override fun elementClass(): Class<UReferenceExpression> = UReferenceExpression::class.java
 }
