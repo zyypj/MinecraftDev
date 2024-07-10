@@ -47,6 +47,7 @@ import org.jetbrains.uast.UCallExpression
 import org.jetbrains.uast.UElement
 import org.jetbrains.uast.UExpression
 import org.jetbrains.uast.UMethod
+import org.jetbrains.uast.UQualifiedReferenceExpression
 import org.jetbrains.uast.evaluateString
 import org.jetbrains.uast.getContainingUClass
 
@@ -119,7 +120,8 @@ abstract class TranslationIdentifier<T : UElement> {
                     ?.componentType?.equalsToText(CommonClassNames.JAVA_LANG_OBJECT) == true
 
             val foldingElement = if (foldMethod) {
-                call
+                // Make sure qualifiers, like I18n in 'I18n.translate()' is also folded
+                call.uastParent as? UQualifiedReferenceExpression ?: call
             } else if (
                 index == 0 &&
                 container.valueArgumentCount > 1 &&
