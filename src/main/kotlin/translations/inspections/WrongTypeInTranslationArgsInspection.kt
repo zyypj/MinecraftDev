@@ -58,7 +58,6 @@ import org.jetbrains.uast.visitor.AbstractUastNonRecursiveVisitor
 class WrongTypeInTranslationArgsInspection : TranslationInspection() {
     override fun getStaticDescription() = "Detect wrong argument types in translation arguments"
 
-
     private val typesHint: Array<Class<out UElement>> =
         arrayOf(UReferenceExpression::class.java, ULiteralExpression::class.java)
 

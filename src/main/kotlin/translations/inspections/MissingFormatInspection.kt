@@ -26,6 +26,7 @@ import com.intellij.codeInspection.LocalQuickFix
 import com.intellij.codeInspection.ProblemsHolder
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.uast.UastHintedVisitorAdapter
+import org.jetbrains.uast.UElement
 import org.jetbrains.uast.UExpression
 import org.jetbrains.uast.ULiteralExpression
 import org.jetbrains.uast.visitor.AbstractUastNonRecursiveVisitor
@@ -33,8 +34,10 @@ import org.jetbrains.uast.visitor.AbstractUastNonRecursiveVisitor
 class MissingFormatInspection : TranslationInspection() {
     override fun getStaticDescription() = "Detects missing format arguments for translations"
 
+    private val typesHint: Array<Class<out UElement>> = arrayOf(UExpression::class.java)
+
     override fun buildVisitor(holder: ProblemsHolder): PsiElementVisitor =
-        UastHintedVisitorAdapter.create(holder.file.language, Visitor(holder), arrayOf(UExpression::class.java))
+        UastHintedVisitorAdapter.create(holder.file.language, Visitor(holder), typesHint)
 
     private class Visitor(private val holder: ProblemsHolder) : AbstractUastNonRecursiveVisitor() {
 

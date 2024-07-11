@@ -32,6 +32,7 @@ import com.intellij.openapi.ui.Messages
 import com.intellij.psi.PsiElementVisitor
 import com.intellij.uast.UastHintedVisitorAdapter
 import com.intellij.util.IncorrectOperationException
+import org.jetbrains.uast.UElement
 import org.jetbrains.uast.ULiteralExpression
 import org.jetbrains.uast.toUElementOfType
 import org.jetbrains.uast.visitor.AbstractUastNonRecursiveVisitor
@@ -41,8 +42,10 @@ class NoTranslationInspection : TranslationInspection() {
         "Checks whether a translation key used in calls to <code>StatCollector.translateToLocal()</code>, " +
             "<code>StatCollector.translateToLocalFormatted()</code> or <code>I18n.format()</code> exists."
 
+    private val typesHint: Array<Class<out UElement>> = arrayOf(ULiteralExpression::class.java)
+
     override fun buildVisitor(holder: ProblemsHolder): PsiElementVisitor =
-        UastHintedVisitorAdapter.create(holder.file.language, Visitor(holder), arrayOf(ULiteralExpression::class.java))
+        UastHintedVisitorAdapter.create(holder.file.language, Visitor(holder), typesHint)
 
     private class Visitor(private val holder: ProblemsHolder) : AbstractUastNonRecursiveVisitor() {
 
