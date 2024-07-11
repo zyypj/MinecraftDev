@@ -21,6 +21,7 @@
 import org.cadixdev.gradle.licenser.header.HeaderStyle
 import org.cadixdev.gradle.licenser.tasks.LicenseUpdate
 import org.gradle.internal.jvm.Jvm
+import org.jetbrains.changelog.Changelog
 import org.jetbrains.gradle.ext.settings
 import org.jetbrains.gradle.ext.taskTriggers
 import org.jetbrains.intellij.tasks.PrepareSandboxTask
@@ -37,6 +38,7 @@ plugins {
     id("org.jetbrains.intellij") version "1.17.2"
     id("org.cadixdev.licenser")
     id("org.jlleitschuh.gradle.ktlint") version "10.3.0"
+    id("org.jetbrains.changelog") version "2.2.0"
 }
 
 val ideaVersionName: String by project
@@ -191,6 +193,12 @@ configurations.compileClasspath {
     attributes.attribute(filtered, true)
 }
 
+changelog {
+    groups.empty()
+    path = "changelog.md"
+    repositoryUrl = "https://github.com/minecraft-dev/MinecraftDev"
+}
+
 intellij {
     // IntelliJ IDEA dependency
     version.set(providers.gradleProperty("ideaVersion"))
@@ -215,6 +223,12 @@ intellij {
     downloadSources.set(providers.gradleProperty("downloadIdeaSources").map { it.toBoolean() })
 
     sandboxDir.set(layout.projectDirectory.dir(".sandbox").toString())
+}
+
+tasks.patchPluginXml {
+    val changelog = project.changelog
+    val item = changelog.getOrNull(version.toString()) ?: changelog.getUnreleased()
+    changeNotes = changelog.renderItem(item.withHeader(false).withEmptySections(false), Changelog.OutputType.HTML)
 }
 
 tasks.publishPlugin {
