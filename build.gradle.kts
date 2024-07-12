@@ -107,11 +107,16 @@ repositories {
         }
     }
     mavenCentral()
+    maven("https://repo.spongepowered.org/maven/")
 }
 
 dependencies {
     // Add tools.jar for the JDI API
     implementation(files(Jvm.current().toolsJar))
+
+    implementation(libs.mixinExtras.expressions)
+    testLibs(libs.mixinExtras.common)
+    implementation("org.ow2.asm:asm-util:9.3")
 
     // Kotlin
     implementation(kotlin("stdlib-jdk8"))
@@ -198,6 +203,7 @@ intellij {
         "Kotlin",
         "org.toml.lang:$pluginTomlVersion",
         "ByteCodeViewer",
+        "org.intellij.intelliLang",
         "properties",
         // needed dependencies for unit tests
         "junit"
@@ -363,6 +369,9 @@ val generateNbttParser by parser("NbttParser", "com/demonwav/mcdev/nbt/lang/gen"
 val generateLangLexer by lexer("LangLexer", "com/demonwav/mcdev/translations/lang/gen")
 val generateLangParser by parser("LangParser", "com/demonwav/mcdev/translations/lang/gen")
 
+val generateMEExpressionLexer by lexer("MEExpressionLexer", "com/demonwav/mcdev/platform/mixin/expression/gen")
+val generateMEExpressionParser by parser("MEExpressionParser", "com/demonwav/mcdev/platform/mixin/expression/gen")
+
 val generateTranslationTemplateLexer by lexer(
     "TranslationTemplateLexer",
     "com/demonwav/mcdev/translations/template/gen"
@@ -381,6 +390,8 @@ val generate by tasks.registering {
         generateNbttParser,
         generateLangLexer,
         generateLangParser,
+        generateMEExpressionLexer,
+        generateMEExpressionParser,
         generateTranslationTemplateLexer,
     )
 }

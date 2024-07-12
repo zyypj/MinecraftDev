@@ -86,13 +86,6 @@ class MinecraftConfigurable : Configurable {
             }
         }
 
-        group(MCDevBundle("minecraft.settings.mixin")) {
-            row {
-                checkBox(MCDevBundle("minecraft.settings.mixin.shadow_annotation_same_line"))
-                    .bindSelected(settings::isShadowAnnotationsSameLine)
-            }
-        }
-
         group(MCDevBundle("minecraft.settings.creator")) {
             row(MCDevBundle("minecraft.settings.creator.repos")) {}
 

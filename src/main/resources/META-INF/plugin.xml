@@ -195,6 +195,7 @@
         <injectionPoint atCode="LOAD" implementation="com.demonwav.mcdev.platform.mixin.handlers.injectionPoint.LoadInjectionPoint" />
         <injectionPoint atCode="STORE" implementation="com.demonwav.mcdev.platform.mixin.handlers.injectionPoint.StoreInjectionPoint" />
         <injectionPoint atCode="CONSTANT" implementation="com.demonwav.mcdev.platform.mixin.handlers.injectionPoint.ConstantInjectionPoint" />
+        <injectionPoint atCode="MIXINEXTRAS:EXPRESSION" implementation="com.demonwav.mcdev.platform.mixin.handlers.mixinextras.ExpressionInjectionPoint" />
 
         <injectionPointAnnotation annotation="org.spongepowered.asm.mixin.injection.Constant" atCode="CONSTANT" />
     </extensions>
@@ -249,6 +250,10 @@
                                  id="Settings.Minecraft"
                                  groupId="language"
                                  instance="com.demonwav.mcdev.MinecraftConfigurable"/>
+        <projectConfigurable displayName="Project-Specific Settings"
+                             id="Settings.Minecraft.Project"
+                             parentId="Settings.Minecraft"
+                             instance="com.demonwav.mcdev.MinecraftProjectConfigurable"/>
         <projectConfigurable displayName="Language Template"
                              id="Settings.Minecraft.TranslationTemplate"
                              parentId="Settings.Minecraft"
@@ -471,6 +476,7 @@
         <lang.foldingBuilder language="JAVA" implementationClass="com.demonwav.mcdev.platform.mixin.folding.MixinObjectCastFoldingBuilder"/>
         <lang.foldingBuilder language="JAVA" implementationClass="com.demonwav.mcdev.platform.mixin.folding.MixinTargetDescriptorFoldingBuilder"/>
         <lang.foldingBuilder language="JAVA" implementationClass="com.demonwav.mcdev.platform.mixin.folding.AccessorMixinFoldingBuilder"/>
+        <lang.foldingBuilder language="JAVA" implementationClass="com.demonwav.mcdev.platform.mixin.expression.MEDefinitionFoldingBuilder"/>
 
         <implicitUsageProvider implementation="com.demonwav.mcdev.platform.mixin.insight.MixinImplicitUsageProvider"/>
         <deadCode implementation="com.demonwav.mcdev.platform.mixin.insight.MixinEntryPoint"/>
@@ -492,6 +498,7 @@
         <psi.referenceContributor language="JAVA" implementation="com.demonwav.mcdev.platform.mixin.reference.MixinReferenceContributor"/>
         <gotoDeclarationHandler implementation="com.demonwav.mcdev.platform.mixin.reference.MethodGTDHandler" order="first"/>
         <gotoDeclarationHandler implementation="com.demonwav.mcdev.platform.mixin.reference.DescGTDHandler" order="first"/>
+        <gotoDeclarationHandler implementation="com.demonwav.mcdev.platform.mixin.reference.target.DefinitionReferenceGTDHandler" order="first"/>
         <gotoDeclarationHandler implementation="com.demonwav.mcdev.platform.mixin.reference.target.TargetGTDHandler" order="first"/>
         <completion.confidence language="JAVA" implementationClass="com.demonwav.mcdev.platform.mixin.completion.MixinCompletionConfidence"
                                order="before javaSkipAutopopupInStrings"/>
@@ -518,6 +525,35 @@
         <debuggerClassFilterProvider implementation="com.demonwav.mcdev.platform.mixin.debug.MixinDebuggerClassFilterProvider"/>
 
         <library.presentationProvider implementation="com.demonwav.mcdev.platform.mixin.framework.MixinPresentationProvider" />
+
+        <!--region MixinExtras Expression Language-->
+        <fileType name="MixinExtras Expression File"
+                  implementationClass="com.demonwav.mcdev.platform.mixin.expression.MEExpressionFileType"
+                  fieldName="INSTANCE"
+                  language="MEExpression"
+                  extensions="mixinextrasexpression"/>
+        <lang.parserDefinition language="MEExpression"
+                               implementationClass="com.demonwav.mcdev.platform.mixin.expression.MEExpressionParserDefinition"/>
+        <lang.syntaxHighlighterFactory language="MEExpression"
+                                       implementationClass="com.demonwav.mcdev.platform.mixin.expression.MEExpressionSyntaxHighlighterFactory"/>
+        <colorSettingsPage implementation="com.demonwav.mcdev.platform.mixin.expression.MEExpressionColorSettingsPage"/>
+        <annotator language="MEExpression"
+                   implementationClass="com.demonwav.mcdev.platform.mixin.expression.MEExpressionAnnotator"/>
+        <lang.braceMatcher language="MEExpression"
+                           implementationClass="com.demonwav.mcdev.platform.mixin.expression.MEExpressionBraceMatcher"/>
+        <lang.quoteHandler language="MEExpression"
+                           implementationClass="com.demonwav.mcdev.platform.mixin.expression.MEExpressionQuoteHandler"/>
+        <lang.elementManipulator forClass="com.demonwav.mcdev.platform.mixin.expression.gen.psi.MEName"
+                                 implementationClass="com.demonwav.mcdev.platform.mixin.expression.psi.MENameElementManipulator"/>
+        <lang.findUsagesProvider language="MEExpression"
+                                 implementationClass="com.demonwav.mcdev.platform.mixin.expression.reference.MEExpressionFindUsagesProvider"/>
+        <lang.refactoringSupport language="MEExpression" implementationClass="com.demonwav.mcdev.platform.mixin.expression.MEExpressionRefactoringSupport"/>
+        <completion.contributor language="MEExpression"
+                                implementationClass="com.demonwav.mcdev.platform.mixin.expression.MEExpressionCompletionContributor"/>
+        <multiHostInjector implementation="com.demonwav.mcdev.platform.mixin.expression.MEExpressionInjector"/>
+        <typedHandler implementation="com.demonwav.mcdev.platform.mixin.expression.MEExpressionTypedHandlerDelegate"/>
+        <!--endregion-->
+
         <!--endregion-->
 
         <!--region VELOCITY-->
