@@ -1,4 +1,4 @@
 [submodule "templates"]
 	path = templates
-	branch = main
+	branch = v1
 	url = https://github.com/minecraft-dev/templates
