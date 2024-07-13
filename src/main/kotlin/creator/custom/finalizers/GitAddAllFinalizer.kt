@@ -23,10 +23,16 @@ package com.demonwav.mcdev.creator.custom.finalizers
 import com.intellij.execution.configurations.GeneralCommandLine
 import com.intellij.execution.util.ExecUtil
 import com.intellij.ide.util.projectWizard.WizardContext
+import com.intellij.openapi.project.Project
 
 class GitAddAllFinalizer : CreatorFinalizer {
 
-    override fun execute(context: WizardContext, properties: Map<String, Any>, templateProperties: Map<String, Any?>) {
+    override fun execute(
+        context: WizardContext,
+        project: Project,
+        properties: Map<String, Any>,
+        templateProperties: Map<String, Any?>
+    ) {
         ExecUtil.execAndGetOutput(GeneralCommandLine("git", "add", ".").withWorkDirectory(context.projectFileDirectory))
     }
 }

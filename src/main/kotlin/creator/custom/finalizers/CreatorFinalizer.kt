@@ -28,6 +28,7 @@ import com.intellij.openapi.diagnostic.ControlFlowException
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.extensions.ExtensionPointName
 import com.intellij.openapi.extensions.RequiredElement
+import com.intellij.openapi.project.Project
 import com.intellij.openapi.util.KeyedExtensionCollector
 import com.intellij.serviceContainer.BaseKeyedLazyInstance
 import com.intellij.util.KeyedLazyInstance
@@ -37,7 +38,12 @@ interface CreatorFinalizer {
 
     fun validate(reporter: TemplateValidationReporter, properties: Map<String, Any>) = Unit
 
-    fun execute(context: WizardContext, properties: Map<String, Any>, templateProperties: Map<String, Any?>)
+    fun execute(
+        context: WizardContext,
+        project: Project,
+        properties: Map<String, Any>,
+        templateProperties: Map<String, Any?>
+    )
 
     companion object {
         private val EP_NAME =
@@ -79,6 +85,7 @@ interface CreatorFinalizer {
 
         fun executeAll(
             context: WizardContext,
+            project: Project,
             finalizers: List<Map<String, Any>>,
             templateProperties: Map<String, Any?>
         ) {
@@ -93,7 +100,7 @@ interface CreatorFinalizer {
 
                 val finalizer = COLLECTOR.findSingle(type)!!
                 try {
-                    finalizer.execute(context, properties, templateProperties)
+                    finalizer.execute(context, project, properties, templateProperties)
                 } catch (t: Throwable) {
                     if (t is ControlFlowException) {
                         throw t
