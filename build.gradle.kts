@@ -426,6 +426,7 @@ tasks.withType<PrepareSandboxTask> {
         into("Minecraft Development/lib/resources")
     }
     from("templates") {
+        exclude(".git")
         into("Minecraft Development/lib/resources/builtin-templates")
     }
 }
