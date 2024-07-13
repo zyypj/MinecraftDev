@@ -4,7 +4,7 @@
 
 This release contains two major features:
 - Support for MixinExtras expressions ([#2274](https://github.com/minecraft-dev/MinecraftDev/pull/2274))
-- A rewritten project creator ([#2274](https://github.com/minecraft-dev/MinecraftDev/pull/2274))
+- A rewritten project creator ([#2304](https://github.com/minecraft-dev/MinecraftDev/pull/2304))
 
 The new project creator is very similar to the previous one but has a few advantages:
 - The templates are now stored on a separate repository and updated the first time you open the creator. This allows us to release template updates independently of plugin releases.
