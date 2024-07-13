@@ -1,10 +1,10 @@
 # Minecraft Development for IntelliJ
 
-## [Unreleased]
-
 This release contains two major features:
 - Support for MixinExtras expressions ([#2274](https://github.com/minecraft-dev/MinecraftDev/pull/2274))
 - A rewritten project creator ([#2304](https://github.com/minecraft-dev/MinecraftDev/pull/2304))
+
+### About the new project creator
 
 The new project creator is very similar to the previous one but has a few advantages:
 - The templates are now stored on a separate repository and updated the first time you open the creator. This allows us to release template updates independently of plugin releases.
@@ -17,8 +17,6 @@ The new project creator is very similar to the previous one but has a few advant
 - Some niche options like the plugins dependencies fields were removed as their use was quite limited
 - Remembered field values won't be ported over to the new creator, so make sure to configure your Group ID under Build System Properties!
 - The old creator will be kept for a few months to give us the time to fix the new creator, please report any issues on the [issue tracker](https://github.com/minecraft-dev/MinecraftDev/issues)
-
----
 
 ### Added
 
