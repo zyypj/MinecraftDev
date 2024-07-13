@@ -194,9 +194,9 @@ configurations.compileClasspath {
 }
 
 changelog {
+    version = coreVersion
     groups.empty()
     path = "changelog.md"
-    repositoryUrl = "https://github.com/minecraft-dev/MinecraftDev"
 }
 
 intellij {
@@ -227,8 +227,7 @@ intellij {
 
 tasks.patchPluginXml {
     val changelog = project.changelog
-    val item = changelog.getOrNull(version.toString()) ?: changelog.getUnreleased()
-    changeNotes = changelog.renderItem(item.withHeader(false).withEmptySections(false), Changelog.OutputType.HTML)
+    changeNotes = changelog.render(Changelog.OutputType.HTML)
 }
 
 tasks.publishPlugin {
