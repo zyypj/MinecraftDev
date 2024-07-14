@@ -32,7 +32,6 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiInstanceOfExpression
 import com.intellij.psi.PsiTypeCastExpression
 import com.intellij.psi.PsiTypeTestPattern
-import com.intellij.psi.util.JavaPsiPatternUtil
 import com.intellij.psi.util.PsiUtil
 
 abstract class MECastExpressionImplMixin(node: ASTNode) : MEExpressionImpl(node), MECastExpressionMixin {
@@ -50,7 +49,7 @@ abstract class MECastExpressionImplMixin(node: ASTNode) : MEExpressionImpl(node)
                     castedExpr?.matchesJava(javaOperand, context) == true
             }
             is PsiInstanceOfExpression -> {
-                val pattern = JavaPsiPatternUtil.skipParenthesizedPatternDown(java.pattern) as? PsiTypeTestPattern
+                val pattern = java.pattern as? PsiTypeTestPattern
                     ?: return false
                 val javaType = pattern.checkType?.type ?: return false
                 val castedExpr = this.castedExpr ?: return false

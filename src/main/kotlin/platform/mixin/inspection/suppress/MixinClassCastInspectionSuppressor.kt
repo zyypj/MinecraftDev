@@ -38,7 +38,6 @@ import com.intellij.psi.PsiInstanceOfExpression
 import com.intellij.psi.PsiType
 import com.intellij.psi.PsiTypeCastExpression
 import com.intellij.psi.PsiTypeTestPattern
-import com.intellij.psi.util.JavaPsiPatternUtil
 import com.intellij.psi.util.PsiUtil
 
 /**
@@ -55,7 +54,7 @@ class MixinClassCastInspectionSuppressor : InspectionSuppressor {
         // check instanceof
         if (element is PsiInstanceOfExpression) {
             val castType = element.checkType?.type
-                ?: (JavaPsiPatternUtil.skipParenthesizedPatternDown(element.pattern) as? PsiTypeTestPattern)
+                ?: (element.pattern as? PsiTypeTestPattern)
                     ?.checkType?.type
                 ?: return false
             var operand = PsiUtil.skipParenthesizedExprDown(element.operand) ?: return false

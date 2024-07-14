@@ -26,7 +26,7 @@ import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VfsUtil
 import java.nio.file.Path
 import kotlinx.coroutines.runBlocking
-import org.jetbrains.idea.maven.buildtool.MavenImportSpec
+import org.jetbrains.idea.maven.buildtool.MavenSyncSpec
 import org.jetbrains.idea.maven.project.MavenProjectsManager
 
 class ImportMavenProjectFinalizer : CreatorFinalizer {
@@ -45,7 +45,7 @@ class ImportMavenProjectFinalizer : CreatorFinalizer {
         val projectsManager = MavenProjectsManager.getInstance(project)
         projectsManager.addManagedFiles(listOf(pomFile))
         runBlocking {
-            projectsManager.updateAllMavenProjects(MavenImportSpec(true, true, false))
+            projectsManager.updateAllMavenProjects(MavenSyncSpec.incremental("ImportMavenProjectFinalizer", false))
         }
 
         thisLogger().info("Import finished")

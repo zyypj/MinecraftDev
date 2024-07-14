@@ -122,7 +122,7 @@ class CreatorFinalizerBean : BaseKeyedLazyInstance<CreatorFinalizer>(), KeyedLaz
     @RequiredElement
     lateinit var implementation: String
 
-    override fun getKey(): String? = type
+    override fun getKey(): String = type
 
     override fun getImplementationClassName(): String? = implementation
 }

@@ -220,7 +220,7 @@ class TemplateProviderBean : BaseKeyedLazyInstance<TemplateProvider>(), KeyedLaz
     @RequiredElement
     lateinit var implementation: String
 
-    override fun getKey(): String? = name
+    override fun getKey(): String = name
 
     override fun getImplementationClassName(): String? = implementation
 }

@@ -38,7 +38,6 @@ abstract class MEAssignStatementImplMixin(node: ASTNode) : MEStatementImpl(node)
         val isOperatorAssignment = java.operationTokenType != JavaTokenType.EQ
         val expandedJava = if (isOperatorAssignment) {
             PsiReplacementUtil.replaceOperatorAssignmentWithAssignmentExpression(java.copy() as PsiAssignmentExpression)
-                as PsiAssignmentExpression
         } else {
             java
         }

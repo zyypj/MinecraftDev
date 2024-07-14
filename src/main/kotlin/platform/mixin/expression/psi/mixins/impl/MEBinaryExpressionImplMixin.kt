@@ -33,7 +33,6 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiInstanceOfExpression
 import com.intellij.psi.PsiTypeTestPattern
 import com.intellij.psi.tree.TokenSet
-import com.intellij.psi.util.JavaPsiPatternUtil
 import com.intellij.psi.util.PsiUtil
 
 abstract class MEBinaryExpressionImplMixin(node: ASTNode) : MEExpressionImpl(node), MEBinaryExpressionMixin {
@@ -51,7 +50,7 @@ abstract class MEBinaryExpressionImplMixin(node: ASTNode) : MEExpressionImpl(nod
                 return false
             }
             val javaType = java.checkType?.type
-                ?: (JavaPsiPatternUtil.skipParenthesizedPatternDown(java.pattern) as? PsiTypeTestPattern)
+                ?: (java.pattern as? PsiTypeTestPattern)
                     ?.checkType?.type
                 ?: return false
             return castType?.matchesJava(javaType, context) == true
