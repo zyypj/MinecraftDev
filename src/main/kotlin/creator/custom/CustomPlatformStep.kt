@@ -38,6 +38,7 @@ import com.intellij.ide.wizard.AbstractNewProjectWizardStep
 import com.intellij.ide.wizard.GitNewProjectWizardData
 import com.intellij.ide.wizard.NewProjectWizardBaseData
 import com.intellij.ide.wizard.NewProjectWizardStep
+import com.intellij.openapi.application.WriteAction
 import com.intellij.openapi.diagnostic.Attachment
 import com.intellij.openapi.diagnostic.ControlFlowException
 import com.intellij.openapi.diagnostic.getOrLogException
@@ -502,21 +503,25 @@ class CustomPlatformStep(
             }
         }
 
-        application.executeOnPooledThread {
-            application.invokeLater({
-                application.runWriteAction {
-                    LocalFileSystem.getInstance().refresh(false)
-                    // Apparently a module root is required for the reformat to work
-                    setupTempRootModule(project, projectPath)
-                }
+        val finalizeAction = {
+            WriteAction.runAndWait<Throwable> {
+                LocalFileSystem.getInstance().refresh(false)
+                // Apparently a module root is required for the reformat to work
+                setupTempRootModule(project, projectPath)
+
                 reformatFiles(project, generatedFiles)
                 openFilesInEditor(project, generatedFiles)
-            }, project.disposed)
+            }
 
             val finalizers = selectedTemplate.descriptor.finalizers
             if (!finalizers.isNullOrEmpty()) {
                 CreatorFinalizer.executeAll(context, project, finalizers, templateProperties)
             }
+        }
+        if (context.isCreatingNewProject) {
+            TemplateService.instance.registerFinalizerAction(project, finalizeAction)
+        } else {
+            application.executeOnPooledThread { finalizeAction() }
         }
     }
 

@@ -220,6 +220,7 @@
         <!---->
 
         <moduleBuilder id="CUSTOM_MINECRAFT_MODULE" builderClass="com.demonwav.mcdev.creator.custom.CustomMinecraftModuleBuilder"/>
+        <postStartupActivity implementation="com.demonwav.mcdev.creator.custom.TemplateProjectFinalizerActivity"/>
         <moduleBuilder id="MINECRAFT_MODULE" builderClass="com.demonwav.mcdev.creator.MinecraftModuleBuilder"/>
         <facetType implementation="com.demonwav.mcdev.facet.MinecraftFacetType" />
         <postStartupActivity implementation="com.demonwav.mcdev.facet.MinecraftFacetDetector"/>
