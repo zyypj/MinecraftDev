@@ -20,14 +20,14 @@
 
 package com.demonwav.mcdev.creator.custom.finalizers
 
-import com.demonwav.mcdev.util.invokeAndWait
 import com.intellij.ide.util.projectWizard.WizardContext
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.vfs.VfsUtil
 import java.nio.file.Path
-import java.util.concurrent.TimeUnit
-import org.jetbrains.idea.maven.project.importing.MavenImportingManager
+import kotlinx.coroutines.runBlocking
+import org.jetbrains.idea.maven.buildtool.MavenImportSpec
+import org.jetbrains.idea.maven.project.MavenProjectsManager
 
 class ImportMavenProjectFinalizer : CreatorFinalizer {
 
@@ -38,25 +38,16 @@ class ImportMavenProjectFinalizer : CreatorFinalizer {
         templateProperties: Map<String, Any?>
     ) {
         val projectDir = context.projectFileDirectory
-
         val pomFile = VfsUtil.findFile(Path.of(projectDir).resolve("pom.xml"), true)
             ?: return
+
         thisLogger().info("Invoking import on EDT pomFile = ${pomFile.path}")
-        val promise = invokeAndWait {
-            if (project.isDisposed || !project.isInitialized) {
-                return@invokeAndWait null
-            }
-
-            MavenImportingManager.getInstance(project).linkAndImportFile(pomFile)
+        val projectsManager = MavenProjectsManager.getInstance(project)
+        projectsManager.addManagedFiles(listOf(pomFile))
+        runBlocking {
+            projectsManager.updateAllMavenProjects(MavenImportSpec(true, true, false))
         }
 
-        if (promise == null) {
-            thisLogger().info("Could not start import")
-            return
-        }
-
-        thisLogger().info("Waiting for import to finish")
-        promise.finishPromise.blockingGet(Int.MAX_VALUE, TimeUnit.SECONDS)
         thisLogger().info("Import finished")
     }
 }

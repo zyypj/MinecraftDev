@@ -21,6 +21,7 @@
 package com.demonwav.mcdev.platform.mixin.expression
 
 import com.intellij.codeInsight.TailType
+import com.intellij.codeInsight.TailTypes
 import com.intellij.codeInsight.completion.BasicExpressionCompletionContributor
 import com.intellij.codeInsight.completion.CompletionContributor
 import com.intellij.codeInsight.completion.CompletionParameters
@@ -38,8 +39,8 @@ class MEExpressionCompletionContributor : CompletionContributor() {
             CompletionType.BASIC,
             MEExpressionCompletionUtil.STATEMENT_KEYWORD_PLACE,
             KeywordCompletionProvider(
-                Keyword("return", TailType.INSERT_SPACE),
-                Keyword("throw", TailType.INSERT_SPACE),
+                Keyword("return", TailTypes.insertSpaceType()),
+                Keyword("throw", TailTypes.insertSpaceType()),
             )
         )
         extend(
@@ -51,7 +52,7 @@ class MEExpressionCompletionContributor : CompletionContributor() {
                 Keyword("true"),
                 Keyword("false"),
                 Keyword("null"),
-                Keyword("new", TailType.INSERT_SPACE),
+                Keyword("new", TailTypes.insertSpaceType()),
             )
         )
         extend(
@@ -65,7 +66,7 @@ class MEExpressionCompletionContributor : CompletionContributor() {
             CompletionType.BASIC,
             MEExpressionCompletionUtil.INSTANCEOF_PLACE,
             KeywordCompletionProvider(
-                Keyword("instanceof", TailType.INSERT_SPACE)
+                Keyword("instanceof", TailTypes.insertSpaceType())
             )
         )
         extend(
@@ -123,7 +124,7 @@ class MEExpressionCompletionContributor : CompletionContributor() {
                 keywords.map { keyword ->
                     var lookupItem =
                         BasicExpressionCompletionContributor.createKeywordLookupItem(parameters.position, keyword.name)
-                    if (keyword.tailType != TailType.NONE) {
+                    if (keyword.tailType != TailTypes.noneType()) {
                         lookupItem = object : TailTypeDecorator<LookupElement>(lookupItem) {
                             override fun computeTailType(context: InsertionContext?) = keyword.tailType
                         }
@@ -134,5 +135,5 @@ class MEExpressionCompletionContributor : CompletionContributor() {
         }
     }
 
-    private class Keyword(val name: String, val tailType: TailType = TailType.NONE)
+    private class Keyword(val name: String, val tailType: TailType = TailTypes.noneType())
 }

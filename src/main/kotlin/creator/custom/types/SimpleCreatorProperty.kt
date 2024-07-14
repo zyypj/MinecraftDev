@@ -100,7 +100,7 @@ abstract class SimpleCreatorProperty<T>(
                             it.validationOnApply(validation)
                         }
                 } else {
-                    segmentedButton(options.keys) { options[it] ?: it.toString() }
+                    segmentedButton(options.keys) { text = options[it] ?: it.toString() }
                         .bind(graphProperty)
                         .enabled(descriptor.editable != false)
                         .maxButtonsCount(4)
