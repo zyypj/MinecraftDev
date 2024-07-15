@@ -32,6 +32,7 @@ import com.demonwav.mcdev.creator.custom.types.ExternalCreatorProperty
 import com.demonwav.mcdev.creator.modalityState
 import com.demonwav.mcdev.util.toTypedArray
 import com.demonwav.mcdev.util.virtualFileOrError
+import com.intellij.codeInsight.CodeInsightSettings
 import com.intellij.codeInsight.actions.ReformatCodeProcessor
 import com.intellij.ide.projectView.ProjectView
 import com.intellij.ide.wizard.AbstractNewProjectWizardStep
@@ -553,7 +554,18 @@ class CustomPlatformStep(
         val psiFiles = files.asSequence()
             .filter { (desc, _) -> desc.reformat != false }
             .mapNotNull { (_, file) -> psiManager.findFile(file) }
-        ReformatCodeProcessor(project, psiFiles.toTypedArray(), null, false).run()
+
+        val processor = ReformatCodeProcessor(project, psiFiles.toTypedArray(), null, false)
+        psiFiles.forEach(processor::setDoNotKeepLineBreaks)
+
+        val insightSettings = CodeInsightSettings.getInstance()
+        val oldSecondReformat = insightSettings.ENABLE_SECOND_REFORMAT
+        insightSettings.ENABLE_SECOND_REFORMAT = true
+        try {
+            processor.run()
+        } finally {
+            insightSettings.ENABLE_SECOND_REFORMAT = oldSecondReformat
+        }
     }
 
     private fun openFilesInEditor(
