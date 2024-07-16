@@ -22,14 +22,13 @@ package com.demonwav.mcdev.creator.custom.types
 
 import com.demonwav.mcdev.creator.ParchmentVersion
 import com.demonwav.mcdev.creator.custom.BuiltinValidations
+import com.demonwav.mcdev.creator.custom.CreatorContext
 import com.demonwav.mcdev.creator.custom.TemplatePropertyDescriptor
 import com.demonwav.mcdev.creator.custom.TemplateValidationReporter
 import com.demonwav.mcdev.creator.custom.model.HasMinecraftVersion
 import com.demonwav.mcdev.creator.custom.model.ParchmentVersions
 import com.demonwav.mcdev.util.SemanticVersion
-import com.intellij.ide.util.projectWizard.WizardContext
 import com.intellij.openapi.observable.properties.GraphProperty
-import com.intellij.openapi.observable.properties.PropertyGraph
 import com.intellij.openapi.observable.util.transform
 import com.intellij.ui.ComboboxSpeedSearch
 import com.intellij.ui.dsl.builder.Panel
@@ -44,9 +43,8 @@ import kotlinx.coroutines.withContext
 
 class ParchmentCreatorProperty(
     descriptor: TemplatePropertyDescriptor,
-    graph: PropertyGraph,
-    properties: Map<String, CreatorProperty<*>>
-) : CreatorProperty<ParchmentVersions>(descriptor, graph, properties, ParchmentVersions::class.java) {
+    context: CreatorContext
+) : CreatorProperty<ParchmentVersions>(descriptor, context, ParchmentVersions::class.java) {
 
     private val emptyVersion = SemanticVersion.release()
 
@@ -92,7 +90,7 @@ class ParchmentCreatorProperty(
         )
     }
 
-    override fun buildUi(panel: Panel, context: WizardContext) {
+    override fun buildUi(panel: Panel) {
         panel.row(descriptor.translatedLabel) {
             checkBox("Use Parchment")
                 .bindSelected(useParchmentProperty)
@@ -274,8 +272,7 @@ class ParchmentCreatorProperty(
     class Factory : CreatorPropertyFactory {
         override fun create(
             descriptor: TemplatePropertyDescriptor,
-            graph: PropertyGraph,
-            properties: Map<String, CreatorProperty<*>>
-        ): CreatorProperty<*> = ParchmentCreatorProperty(descriptor, graph, properties)
+            context: CreatorContext
+        ): CreatorProperty<*> = ParchmentCreatorProperty(descriptor, context)
     }
 }

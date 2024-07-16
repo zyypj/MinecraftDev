@@ -22,6 +22,7 @@ package com.demonwav.mcdev.creator.custom.types
 
 import com.demonwav.mcdev.asset.MCDevBundle
 import com.demonwav.mcdev.creator.custom.BuiltinValidations
+import com.demonwav.mcdev.creator.custom.CreatorContext
 import com.demonwav.mcdev.creator.custom.TemplateEvaluator
 import com.demonwav.mcdev.creator.custom.TemplatePropertyDescriptor
 import com.demonwav.mcdev.creator.custom.TemplateValidationReporter
@@ -31,9 +32,7 @@ import com.demonwav.mcdev.platform.neoforge.version.NeoGradleVersion
 import com.demonwav.mcdev.platform.neoforge.version.platform.neoforge.version.NeoModDevVersion
 import com.demonwav.mcdev.util.SemanticVersion
 import com.demonwav.mcdev.util.asyncIO
-import com.intellij.ide.util.projectWizard.WizardContext
 import com.intellij.openapi.observable.properties.GraphProperty
-import com.intellij.openapi.observable.properties.PropertyGraph
 import com.intellij.openapi.observable.util.not
 import com.intellij.openapi.observable.util.transform
 import com.intellij.ui.ComboboxSpeedSearch
@@ -51,9 +50,8 @@ import kotlinx.coroutines.withContext
 
 class NeoForgeVersionsCreatorProperty(
     descriptor: TemplatePropertyDescriptor,
-    graph: PropertyGraph,
-    properties: Map<String, CreatorProperty<*>>
-) : CreatorProperty<NeoForgeVersions>(descriptor, graph, properties, NeoForgeVersions::class.java) {
+    context: CreatorContext
+) : CreatorProperty<NeoForgeVersions>(descriptor, context, NeoForgeVersions::class.java) {
 
     private val emptyVersion = SemanticVersion.release()
 
@@ -97,7 +95,7 @@ class NeoForgeVersionsCreatorProperty(
         )
     }
 
-    override fun buildUi(panel: Panel, context: WizardContext) {
+    override fun buildUi(panel: Panel) {
         panel.row("") {
             cell(AsyncProcessIcon("NeoForgeVersions download"))
             label(MCDevBundle("creator.ui.versions_download.label"))
@@ -204,8 +202,7 @@ class NeoForgeVersionsCreatorProperty(
     class Factory : CreatorPropertyFactory {
         override fun create(
             descriptor: TemplatePropertyDescriptor,
-            graph: PropertyGraph,
-            properties: Map<String, CreatorProperty<*>>
-        ): CreatorProperty<*> = NeoForgeVersionsCreatorProperty(descriptor, graph, properties)
+            context: CreatorContext
+        ): CreatorProperty<*> = NeoForgeVersionsCreatorProperty(descriptor, context)
     }
 }

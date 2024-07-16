@@ -120,6 +120,7 @@ class CustomPlatformStep(
     private var hasTemplateErrors: Boolean = true
 
     private var properties = mutableMapOf<String, CreatorProperty<*>>()
+    private var creatorContext = CreatorContext(propertyGraph, properties, context)
 
     override fun setupUI(builder: Panel) {
         lateinit var templatePropertyPlaceholder: Placeholder
@@ -311,6 +312,7 @@ class CustomPlatformStep(
 
     private fun createOptionsPanelInBackground(template: LoadedTemplate, placeholder: Placeholder) {
         properties = mutableMapOf()
+        creatorContext = creatorContext.copy(properties = properties)
 
         if (!template.isValid) {
             return
@@ -320,8 +322,7 @@ class CustomPlatformStep(
             ?: return thisLogger().error("Could not find wizard base data")
 
         properties["PROJECT_NAME"] = ExternalCreatorProperty(
-            graph = propertyGraph,
-            properties = properties,
+            context = creatorContext,
             graphProperty = baseData.nameProperty,
             valueType = String::class.java
         )
@@ -421,7 +422,7 @@ class CustomPlatformStep(
             reporter.fatal("Duplicate property name ${descriptor.name}")
         }
 
-        val prop = CreatorPropertyFactory.createFromType(descriptor.type, descriptor, propertyGraph, properties)
+        val prop = CreatorPropertyFactory.createFromType(descriptor.type, descriptor, creatorContext)
         if (prop == null) {
             reporter.fatal("Unknown template property type ${descriptor.type}")
         }
@@ -434,7 +435,7 @@ class CustomPlatformStep(
             return null
         }
 
-        val factory = Consumer<Panel> { panel -> prop.buildUi(panel, context) }
+        val factory = Consumer<Panel> { panel -> prop.buildUi(panel) }
         val order = descriptor.order ?: 0
         return factory to order
     }
