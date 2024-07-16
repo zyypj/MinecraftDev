@@ -21,15 +21,14 @@
 package com.demonwav.mcdev.creator.custom.types
 
 import com.demonwav.mcdev.creator.collectMavenVersions
+import com.demonwav.mcdev.creator.custom.CreatorContext
 import com.demonwav.mcdev.creator.custom.TemplateEvaluator
 import com.demonwav.mcdev.creator.custom.TemplatePropertyDescriptor
 import com.demonwav.mcdev.creator.custom.TemplateValidationReporter
 import com.demonwav.mcdev.util.SemanticVersion
-import com.intellij.ide.util.projectWizard.WizardContext
 import com.intellij.openapi.diagnostic.getOrLogException
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.observable.properties.GraphProperty
-import com.intellij.openapi.observable.properties.PropertyGraph
 import com.intellij.ui.ComboboxSpeedSearch
 import com.intellij.ui.dsl.builder.Panel
 import com.intellij.ui.dsl.builder.bindItem
@@ -43,9 +42,8 @@ import kotlinx.coroutines.withContext
 
 class MavenArtifactVersionCreatorProperty(
     descriptor: TemplatePropertyDescriptor,
-    graph: PropertyGraph,
-    properties: Map<String, CreatorProperty<*>>
-) : SemanticVersionCreatorProperty(descriptor, graph, properties) {
+    context: CreatorContext
+) : SemanticVersionCreatorProperty(descriptor, context) {
 
     lateinit var sourceUrl: String
     var rawVersionFilter: (String) -> Boolean = { true }
@@ -55,7 +53,7 @@ class MavenArtifactVersionCreatorProperty(
     private val versionsProperty = graph.property<Collection<SemanticVersion>>(emptyList())
     private val loadingVersionsProperty = graph.property(true)
 
-    override fun buildUi(panel: Panel, context: WizardContext) {
+    override fun buildUi(panel: Panel) {
         panel.row(descriptor.translatedLabel) {
             val combobox = comboBox(versionsProperty.get())
                 .bindItem(graphProperty)
@@ -170,8 +168,7 @@ class MavenArtifactVersionCreatorProperty(
 
         override fun create(
             descriptor: TemplatePropertyDescriptor,
-            graph: PropertyGraph,
-            properties: Map<String, CreatorProperty<*>>
-        ): CreatorProperty<*> = MavenArtifactVersionCreatorProperty(descriptor, graph, properties)
+            context: CreatorContext
+        ): CreatorProperty<*> = MavenArtifactVersionCreatorProperty(descriptor, context)
     }
 }

@@ -32,6 +32,7 @@ import com.demonwav.mcdev.creator.custom.types.ExternalCreatorProperty
 import com.demonwav.mcdev.creator.modalityState
 import com.demonwav.mcdev.util.toTypedArray
 import com.demonwav.mcdev.util.virtualFileOrError
+import com.intellij.codeInsight.CodeInsightSettings
 import com.intellij.codeInsight.actions.ReformatCodeProcessor
 import com.intellij.ide.projectView.ProjectView
 import com.intellij.ide.wizard.AbstractNewProjectWizardStep
@@ -125,6 +126,7 @@ class CustomPlatformStep(
     private var hasTemplateErrors: Boolean = true
 
     private var properties = mutableMapOf<String, CreatorProperty<*>>()
+    private var creatorContext = CreatorContext(propertyGraph, properties, context)
 
     init {
         Disposer.register(context.disposable) {
@@ -288,6 +290,7 @@ class CustomPlatformStep(
 
     private fun createOptionsPanelInBackground(template: LoadedTemplate, placeholder: Placeholder) {
         properties = mutableMapOf()
+        creatorContext = creatorContext.copy(properties = properties)
 
         if (!template.isValid) {
             return
@@ -297,8 +300,7 @@ class CustomPlatformStep(
             ?: return thisLogger().error("Could not find wizard base data")
 
         properties["PROJECT_NAME"] = ExternalCreatorProperty(
-            graph = propertyGraph,
-            properties = properties,
+            context = creatorContext,
             graphProperty = baseData.nameProperty,
             valueType = String::class.java
         )
@@ -398,7 +400,7 @@ class CustomPlatformStep(
             reporter.fatal("Duplicate property name ${descriptor.name}")
         }
 
-        val prop = CreatorPropertyFactory.createFromType(descriptor.type, descriptor, propertyGraph, properties)
+        val prop = CreatorPropertyFactory.createFromType(descriptor.type, descriptor, creatorContext)
         if (prop == null) {
             reporter.fatal("Unknown template property type ${descriptor.type}")
         }
@@ -411,7 +413,7 @@ class CustomPlatformStep(
             return null
         }
 
-        val factory = Consumer<Panel> { panel -> prop.buildUi(panel, context) }
+        val factory = Consumer<Panel> { panel -> prop.buildUi(panel) }
         val order = descriptor.order ?: 0
         return factory to order
     }
@@ -531,7 +533,18 @@ class CustomPlatformStep(
         val psiFiles = files.asSequence()
             .filter { (desc, _) -> desc.reformat != false }
             .mapNotNull { (_, file) -> psiManager.findFile(file) }
-        ReformatCodeProcessor(project, psiFiles.toTypedArray(), null, false).run()
+
+        val processor = ReformatCodeProcessor(project, psiFiles.toTypedArray(), null, false)
+        psiFiles.forEach(processor::setDoNotKeepLineBreaks)
+
+        val insightSettings = CodeInsightSettings.getInstance()
+        val oldSecondReformat = insightSettings.ENABLE_SECOND_REFORMAT
+        insightSettings.ENABLE_SECOND_REFORMAT = true
+        try {
+            processor.run()
+        } finally {
+            insightSettings.ENABLE_SECOND_REFORMAT = oldSecondReformat
+        }
     }
 
     private fun openFilesInEditor(

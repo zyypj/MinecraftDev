@@ -18,22 +18,14 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.demonwav.mcdev.platform.mcp.version
+package com.demonwav.mcdev.creator.custom
 
-import com.demonwav.mcdev.platform.mcp.McpVersionPair
+import com.demonwav.mcdev.creator.custom.types.CreatorProperty
+import com.intellij.ide.util.projectWizard.WizardContext
+import com.intellij.openapi.observable.properties.PropertyGraph
 
-class McpVersionEntry(val versionPair: McpVersionPair, val isRed: Boolean = false) {
-
-    override fun toString(): String {
-        return if (isRed) {
-            RED_START + versionPair.mcpVersion + RED_END
-        } else {
-            versionPair.mcpVersion
-        }
-    }
-
-    companion object {
-        private const val RED_START = "<html><font color='red'>"
-        private const val RED_END = "</font></html>"
-    }
-}
+data class CreatorContext(
+    val graph: PropertyGraph,
+    val properties: Map<String, CreatorProperty<*>>,
+    val wizardContext: WizardContext,
+)
