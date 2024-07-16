@@ -34,11 +34,9 @@ import com.intellij.ui.ComboboxSpeedSearch
 import com.intellij.ui.dsl.builder.Panel
 import com.intellij.ui.dsl.builder.bindItem
 import com.intellij.ui.dsl.builder.bindSelected
-import com.intellij.util.application
 import javax.swing.DefaultComboBoxModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.swing.Swing
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class ParchmentCreatorProperty(
@@ -167,7 +165,7 @@ class ParchmentCreatorProperty(
             refreshVersionsLists()
         }
 
-        downloadVersions {
+        downloadVersions(context) {
             refreshVersionsLists()
 
             val minecraftVersion = getPlatformMinecraftVersion()
@@ -248,22 +246,21 @@ class ParchmentCreatorProperty(
 
         private var allParchmentVersions: List<ParchmentVersion>? = null
 
-        private fun downloadVersions(uiCallback: () -> Unit) {
+        private fun downloadVersions(context: CreatorContext, uiCallback: () -> Unit) {
             if (hasDownloadedVersions) {
                 uiCallback()
                 return
             }
 
-            application.executeOnPooledThread {
-                runBlocking {
-                    allParchmentVersions = ParchmentVersion.downloadData()
-                        .sortedByDescending(ParchmentVersion::parchmentVersion)
+            val scope = context.childScope("ParchmentCreatorProperty")
+            scope.launch(Dispatchers.IO) {
+                allParchmentVersions = ParchmentVersion.downloadData()
+                    .sortedByDescending(ParchmentVersion::parchmentVersion)
 
-                    hasDownloadedVersions = true
+                hasDownloadedVersions = true
 
-                    withContext(Dispatchers.Swing) {
-                        uiCallback()
-                    }
+                withContext(context.uiContext) {
+                    uiCallback()
                 }
             }
         }

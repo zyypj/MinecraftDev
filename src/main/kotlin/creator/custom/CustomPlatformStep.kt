@@ -91,6 +91,7 @@ class CustomPlatformStep(
     parent: NewProjectWizardStep,
 ) : AbstractNewProjectWizardStep(parent) {
 
+    val creatorScope = TemplateService.instance.scope("MinecraftDev Creator")
     val creatorUiScope = TemplateService.instance.scope("MinecraftDev Creator UI")
     val templateRepos = MinecraftSettings.instance.creatorTemplateRepos
 
@@ -126,10 +127,11 @@ class CustomPlatformStep(
     private var hasTemplateErrors: Boolean = true
 
     private var properties = mutableMapOf<String, CreatorProperty<*>>()
-    private var creatorContext = CreatorContext(propertyGraph, properties, context)
+    private var creatorContext = CreatorContext(propertyGraph, properties, context, creatorScope)
 
     init {
         Disposer.register(context.disposable) {
+            creatorScope.cancel("The creator got disposed")
             creatorUiScope.cancel("The creator got disposed")
         }
     }

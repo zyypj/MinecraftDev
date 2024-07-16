@@ -49,8 +49,7 @@ import com.intellij.util.ui.AsyncProcessIcon
 import javax.swing.DefaultComboBoxModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.awaitAll
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.swing.Swing
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class ArchitecturyVersionsCreatorProperty(
@@ -280,7 +279,7 @@ class ArchitecturyVersionsCreatorProperty(
             updateArchitecturyApiVersions()
         }
 
-        downloadVersions {
+        downloadVersions(context) {
             val fabricVersions = fabricVersions
             if (fabricVersions != null) {
                 loaderVersionModel.removeAllElements()
@@ -433,36 +432,35 @@ class ArchitecturyVersionsCreatorProperty(
         private var fabricApiVersions: FabricApiVersions? = null
         private var architecturyVersions: ArchitecturyVersion? = null
 
-        private fun downloadVersions(completeCallback: () -> Unit) {
+        private fun downloadVersions(context: CreatorContext, completeCallback: () -> Unit) {
             if (hasDownloadedVersions) {
                 completeCallback()
                 return
             }
 
-            application.executeOnPooledThread {
-                runBlocking {
-                    awaitAll(
-                        asyncIO { ForgeVersion.downloadData().also { forgeVersions = it } },
-                        asyncIO { NeoForgeVersion.downloadData().also { neoForgeVersions = it } },
-                        asyncIO { FabricVersions.downloadData().also { fabricVersions = it } },
-                        asyncIO {
-                            collectMavenVersions(
-                                "https://maven.architectury.dev/dev/architectury/architectury-loom/maven-metadata.xml"
-                            ).also {
-                                loomVersions = it
-                                    .mapNotNull(SemanticVersion::tryParse)
-                                    .sortedDescending()
-                            }
-                        },
-                        asyncIO { FabricApiVersions.downloadData().also { fabricApiVersions = it } },
-                        asyncIO { ArchitecturyVersion.downloadData().also { architecturyVersions = it } },
-                    )
+            val scope = context.childScope("ArchitecturyVersionsCreatorProperty")
+            scope.launch(Dispatchers.Default) {
+                awaitAll(
+                    asyncIO { ForgeVersion.downloadData().also { forgeVersions = it } },
+                    asyncIO { NeoForgeVersion.downloadData().also { neoForgeVersions = it } },
+                    asyncIO { FabricVersions.downloadData().also { fabricVersions = it } },
+                    asyncIO {
+                        collectMavenVersions(
+                            "https://maven.architectury.dev/dev/architectury/architectury-loom/maven-metadata.xml"
+                        ).also {
+                            loomVersions = it
+                                .mapNotNull(SemanticVersion::tryParse)
+                                .sortedDescending()
+                        }
+                    },
+                    asyncIO { FabricApiVersions.downloadData().also { fabricApiVersions = it } },
+                    asyncIO { ArchitecturyVersion.downloadData().also { architecturyVersions = it } },
+                )
 
-                    hasDownloadedVersions = true
+                hasDownloadedVersions = true
 
-                    withContext(Dispatchers.Swing) {
-                        completeCallback()
-                    }
+                withContext(context.uiContext) {
+                    completeCallback()
                 }
             }
         }

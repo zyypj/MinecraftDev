@@ -36,12 +36,10 @@ import com.intellij.ui.ComboboxSpeedSearch
 import com.intellij.ui.dsl.builder.Panel
 import com.intellij.ui.dsl.builder.RightGap
 import com.intellij.ui.dsl.builder.bindItem
-import com.intellij.util.application
 import com.intellij.util.ui.AsyncProcessIcon
 import javax.swing.DefaultComboBoxModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.swing.Swing
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class ForgeVersionsCreatorProperty(
@@ -148,7 +146,7 @@ class ForgeVersionsCreatorProperty(
             }
         }
 
-        downloadVersions {
+        downloadVersions(context) {
             reloadMinecraftVersions()
 
             loadingVersionsProperty.set(false)
@@ -186,21 +184,20 @@ class ForgeVersionsCreatorProperty(
 
         private var forgeVersion: ForgeVersion? = null
 
-        private fun downloadVersions(uiCallback: () -> Unit) {
+        private fun downloadVersions(context: CreatorContext, uiCallback: () -> Unit) {
             if (hasDownloadedVersions) {
                 uiCallback()
                 return
             }
 
-            application.executeOnPooledThread {
-                runBlocking {
-                    forgeVersion = ForgeVersion.downloadData()
+            val scope = context.childScope("ForgeVersionsCreatorProperty")
+            scope.launch(Dispatchers.IO) {
+                forgeVersion = ForgeVersion.downloadData()
 
-                    hasDownloadedVersions = true
+                hasDownloadedVersions = true
 
-                    withContext(Dispatchers.Swing) {
-                        uiCallback()
-                    }
+                withContext(context.uiContext) {
+                    uiCallback()
                 }
             }
         }

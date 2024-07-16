@@ -39,13 +39,11 @@ import com.intellij.ui.ComboboxSpeedSearch
 import com.intellij.ui.dsl.builder.Panel
 import com.intellij.ui.dsl.builder.RightGap
 import com.intellij.ui.dsl.builder.bindItem
-import com.intellij.util.application
 import com.intellij.util.ui.AsyncProcessIcon
 import javax.swing.DefaultComboBoxModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.awaitAll
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.swing.Swing
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class NeoForgeVersionsCreatorProperty(
@@ -135,7 +133,7 @@ class NeoForgeVersionsCreatorProperty(
         }
 
         val mcVersionFilter = descriptor.parameters?.get("mcVersionFilter") as? String
-        downloadVersion(mcVersionFilter) {
+        downloadVersion(context, mcVersionFilter) {
             val mcVersions = mcVersions ?: return@downloadVersion
 
             mcVersionsModel.removeAllElements()
@@ -164,36 +162,35 @@ class NeoForgeVersionsCreatorProperty(
         private var mdVersion: NeoModDevVersion? = null
         private var mcVersions: List<SemanticVersion>? = null
 
-        private fun downloadVersion(mcVersionFilter: String?, uiCallback: () -> Unit) {
+        private fun downloadVersion(context: CreatorContext, mcVersionFilter: String?, uiCallback: () -> Unit) {
             if (hasDownloadedVersions) {
                 uiCallback()
                 return
             }
 
-            application.executeOnPooledThread {
-                runBlocking {
-                    awaitAll(
-                        asyncIO { NeoForgeVersion.downloadData().also { nfVersion = it } },
-                        asyncIO { NeoGradleVersion.downloadData().also { ngVersion = it } },
-                        asyncIO { NeoModDevVersion.downloadData().also { mdVersion = it } },
-                    )
+            val scope = context.childScope("NeoForgeVersionsCreatorProperty")
+            scope.launch(Dispatchers.Default) {
+                awaitAll(
+                    asyncIO { NeoForgeVersion.downloadData().also { nfVersion = it } },
+                    asyncIO { NeoGradleVersion.downloadData().also { ngVersion = it } },
+                    asyncIO { NeoModDevVersion.downloadData().also { mdVersion = it } },
+                )
 
-                    mcVersions = nfVersion?.sortedMcVersions?.let { mcVersion ->
-                        if (mcVersionFilter != null) {
-                            mcVersion.filter { version ->
-                                val conditionProps = mapOf("MC_VERSION" to version)
-                                TemplateEvaluator.condition(conditionProps, mcVersionFilter).getOrDefault(true)
-                            }
-                        } else {
-                            mcVersion
+                mcVersions = nfVersion?.sortedMcVersions?.let { mcVersion ->
+                    if (mcVersionFilter != null) {
+                        mcVersion.filter { version ->
+                            val conditionProps = mapOf("MC_VERSION" to version)
+                            TemplateEvaluator.condition(conditionProps, mcVersionFilter).getOrDefault(true)
                         }
+                    } else {
+                        mcVersion
                     }
+                }
 
-                    hasDownloadedVersions = true
+                hasDownloadedVersions = true
 
-                    withContext(Dispatchers.Swing) {
-                        uiCallback()
-                    }
+                withContext(context.uiContext) {
+                    uiCallback()
                 }
             }
         }
