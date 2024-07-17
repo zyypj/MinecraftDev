@@ -28,9 +28,9 @@ import com.intellij.openapi.application.ModalityState
 import com.intellij.openapi.application.asContextElement
 import com.intellij.openapi.observable.properties.PropertyGraph
 import com.intellij.util.namedChildScope
+import kotlin.coroutines.CoroutineContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlin.coroutines.CoroutineContext
 
 data class CreatorContext(
     val graph: PropertyGraph,
