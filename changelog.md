@@ -1,5 +1,16 @@
 # Minecraft Development for IntelliJ
 
+## [Unreleased]
+
+### Added
+
+- Access widener completion in fabric.mod.json
+
+### Fixed
+
+- [#2330](https://github.com/minecraft-dev/MinecraftDev/issues/2330) Reformat created files without keeping line breaks. Fixes the Velocity main class annotation's bad formatting.
+- [#2331](https://github.com/minecraft-dev/MinecraftDev/issues/2331) Support fabric.mod.json in test resources
+
 ## [1.8.0]
 
 This release contains two major features:
