@@ -57,6 +57,8 @@ class JumpInjectionPoint : InjectionPoint<PsiElement>() {
         )
     }
 
+    override val isDiscouraged = true
+
     override fun createNavigationVisitor(
         at: PsiAnnotation,
         target: MixinSelector?,

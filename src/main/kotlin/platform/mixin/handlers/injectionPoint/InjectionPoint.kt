@@ -108,6 +108,8 @@ abstract class InjectionPoint<T : PsiElement> {
 
     open fun isArgValueList(at: PsiAnnotation, key: String) = false
 
+    open val isDiscouraged: Boolean = false
+
     abstract fun createNavigationVisitor(
         at: PsiAnnotation,
         target: MixinSelector?,
