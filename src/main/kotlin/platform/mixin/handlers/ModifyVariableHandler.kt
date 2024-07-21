@@ -23,6 +23,7 @@ package com.demonwav.mcdev.platform.mixin.handlers
 import com.demonwav.mcdev.platform.mixin.handlers.injectionPoint.AbstractLoadInjectionPoint
 import com.demonwav.mcdev.platform.mixin.handlers.injectionPoint.CollectVisitor
 import com.demonwav.mcdev.platform.mixin.handlers.injectionPoint.InjectionPoint
+import com.demonwav.mcdev.platform.mixin.handlers.injectionPoint.StoreInjectionPoint
 import com.demonwav.mcdev.platform.mixin.inspection.injector.MethodSignature
 import com.demonwav.mcdev.platform.mixin.inspection.injector.ParameterGroup
 import com.demonwav.mcdev.platform.mixin.util.LocalInfo
@@ -47,7 +48,9 @@ class ModifyVariableHandler : InjectorAnnotationHandler() {
 
         val at = annotation.findAttributeValue("at") as? PsiAnnotation
         val atCode = at?.findAttributeValue("value")?.constantStringValue
-        val isLoadStore = atCode != null && InjectionPoint.byAtCode(atCode) is AbstractLoadInjectionPoint
+        val injectionPoint = atCode?.let { InjectionPoint.byAtCode(atCode) }
+        val isLoadStore = injectionPoint is AbstractLoadInjectionPoint
+        val isStore = injectionPoint is StoreInjectionPoint
         val mode = if (isLoadStore) CollectVisitor.Mode.COMPLETION else CollectVisitor.Mode.MATCH_ALL
         val targets = resolveInstructions(annotation, targetClass, targetMethod, mode)
 
@@ -63,7 +66,8 @@ class ModifyVariableHandler : InjectorAnnotationHandler() {
 
         val possibleTypes = mutableSetOf<String>()
         for (insn in targets) {
-            val locals = info.getLocals(module, targetClass, targetMethod, insn.insn) ?: continue
+            val actualInsn = if (isStore) insn.insn.next ?: insn.insn else insn.insn
+            val locals = info.getLocals(module, targetClass, targetMethod, actualInsn) ?: continue
             val matchedLocals = info.matchLocals(locals, CollectVisitor.Mode.COMPLETION, matchType = false)
             for (local in matchedLocals) {
                 possibleTypes += local.desc!!
