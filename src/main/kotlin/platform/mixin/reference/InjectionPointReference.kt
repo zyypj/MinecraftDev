@@ -88,7 +88,7 @@ object InjectionPointReference : ReferenceResolver(), MixinReference {
         return (
             getAllAtCodes(context.project).keys.asSequence()
                 .filter {
-                    InjectionPoint.byAtCode(it)?.isDiscouraged != true
+                    InjectionPoint.byAtCode(it)?.discouragedMessage == null
                 }
                 .map {
                     PrioritizedLookupElement.withPriority(

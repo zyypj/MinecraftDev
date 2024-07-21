@@ -20,6 +20,7 @@
 
 package com.demonwav.mcdev.platform.mixin.inspection.injector
 
+import com.demonwav.mcdev.platform.mixin.handlers.injectionPoint.AtResolver
 import com.demonwav.mcdev.platform.mixin.handlers.injectionPoint.InjectionPoint
 import com.demonwav.mcdev.platform.mixin.inspection.MixinInspection
 import com.demonwav.mcdev.platform.mixin.util.MixinConstants
@@ -29,8 +30,8 @@ import com.intellij.psi.JavaElementVisitor
 import com.intellij.psi.PsiAnnotation
 import com.intellij.psi.PsiElementVisitor
 
-class DiscouragedInjectionPointInspection : MixinInspection() {
-    override fun getStaticDescription() = "Reports when a discouraged injection point is used"
+class DiscouragedShiftInspection : MixinInspection() {
+    override fun getStaticDescription() = "Reports discouraged usages of shifting in injection points"
 
     override fun buildVisitor(holder: ProblemsHolder): PsiElementVisitor = object : JavaElementVisitor() {
         override fun visitAnnotation(annotation: PsiAnnotation) {
@@ -39,9 +40,10 @@ class DiscouragedInjectionPointInspection : MixinInspection() {
             }
             val atValue = annotation.findDeclaredAttributeValue("value") ?: return
             val atCode = atValue.constantStringValue ?: return
-            val discouragedMessage = InjectionPoint.byAtCode(atCode)?.discouragedMessage
-            if (discouragedMessage != null) {
-                holder.registerProblem(atValue, discouragedMessage)
+            val shift = AtResolver.getShift(annotation)
+            if (InjectionPoint.byAtCode(atCode)?.isShiftDiscouraged(shift) == true) {
+                val shiftElement = annotation.findDeclaredAttributeValue("shift") ?: return
+                holder.registerProblem(shiftElement, "Shifting like this is discouraged because it's brittle")
             }
         }
     }

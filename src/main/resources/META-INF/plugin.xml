@@ -1026,6 +1026,14 @@
                          level="WARNING"
                          hasStaticDescription="true"
                          implementationClass="com.demonwav.mcdev.platform.mixin.inspection.injector.DiscouragedInjectionPointInspection"/>
+        <localInspection displayName="Usage of discouraged shifting in injection point"
+                         shortName="DiscouragedShift"
+                         groupName="Mixin"
+                         language="JAVA"
+                         enabledByDefault="true"
+                         level="WARNING"
+                         hasStaticDescription="true"
+                         implementationClass="com.demonwav.mcdev.platform.mixin.inspection.injector.DiscouragedShiftInspection"/>
         <!--endregion-->
 
         <!--region Overwrite Inspections -->

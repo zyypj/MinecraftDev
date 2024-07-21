@@ -67,6 +67,24 @@ abstract class AbstractLoadInjectionPoint(private val store: Boolean) : Injectio
         return LocalInfo.fromAnnotation(localType, modifyVariable)
     }
 
+    override fun isShiftDiscouraged(shift: Int): Boolean {
+        if (shift == 0) {
+            return false
+        }
+        if (store) {
+            // allow shift before the STORE
+            if (shift == -1) {
+                return false
+            }
+        } else {
+            // allow shift after the LOAD
+            if (shift == 1) {
+                return false
+            }
+        }
+        return true
+    }
+
     override fun createNavigationVisitor(
         at: PsiAnnotation,
         target: MixinSelector?,

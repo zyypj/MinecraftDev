@@ -57,7 +57,7 @@ class JumpInjectionPoint : InjectionPoint<PsiElement>() {
         )
     }
 
-    override val isDiscouraged = true
+    override val discouragedMessage = "Usage of JUMP is discouraged because it is brittle"
 
     override fun createNavigationVisitor(
         at: PsiAnnotation,
