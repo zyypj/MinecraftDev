@@ -20,6 +20,7 @@
 
 package com.demonwav.mcdev.platform.mixin.framework
 
+import com.demonwav.mcdev.MinecraftSettings
 import com.demonwav.mcdev.asset.PlatformAssets
 import com.demonwav.mcdev.platform.mixin.util.isMixin
 import com.intellij.ide.IconProvider
@@ -28,5 +29,7 @@ import com.intellij.psi.PsiElement
 
 class MixinIconProvider : IconProvider() {
     override fun getIcon(element: PsiElement, flags: Int) =
-        PlatformAssets.MIXIN_ICON.takeIf { element is PsiClass && element.isMixin }
+        PlatformAssets.MIXIN_ICON.takeIf {
+            MinecraftSettings.instance.mixinClassIcon && element is PsiClass && element.isMixin
+        }
 }
