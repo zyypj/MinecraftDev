@@ -5,6 +5,7 @@
 ### Added
 
 - Access widener completion in fabric.mod.json
+- Event listener generation for Kotlin
 
 ### Fixed
 

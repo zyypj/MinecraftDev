@@ -92,6 +92,10 @@
             <with attribute="implementation" implements="com.demonwav.mcdev.platform.mixin.handlers.injectionPoint.InjectionPoint"/>
         </extensionPoint>
         <extensionPoint name="injectionPointAnnotation" beanClass="com.demonwav.mcdev.platform.mixin.handlers.injectionPoint.InjectionPointAnnotation" dynamic="true" />
+
+        <extensionPoint name="eventGenHelper" beanClass="com.intellij.lang.LanguageExtensionPoint" dynamic="true">
+            <with attribute="implementationClass" implements="com.demonwav.mcdev.insight.generation.EventGenHelper"/>
+        </extensionPoint>
     </extensionPoints>
 
     <extensions defaultExtensionNs="com.demonwav.minecraft-dev">
@@ -199,6 +203,8 @@
         <injectionPoint atCode="MIXINEXTRAS:EXPRESSION" implementation="com.demonwav.mcdev.platform.mixin.handlers.mixinextras.ExpressionInjectionPoint" />
 
         <injectionPointAnnotation annotation="org.spongepowered.asm.mixin.injection.Constant" atCode="CONSTANT" />
+
+        <eventGenHelper language="JAVA" implementationClass="com.demonwav.mcdev.insight.generation.JavaEventGenHelper" />
     </extensions>
 
     <extensions defaultExtensionNs="com.intellij">
