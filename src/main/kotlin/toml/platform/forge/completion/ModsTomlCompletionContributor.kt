@@ -104,25 +104,31 @@ object ModsTomlKeyCompletionProvider : CompletionProvider<CompletionParameters>(
                 val existingKeys = table.entries.mapTo(HashSet()) { it.key.text }
                 schema.topLevelEntries(isArray).filter { it.key !in existingKeys }
             }
+
             is TomlKeyValue -> when (table) {
                 null -> {
                     val existingKeys =
                         key.containingFile.children.filterIsInstance<TomlKeyValue>().mapTo(HashSet()) { it.key.text }
                     schema.topLevelEntries.filter { it.key !in existingKeys }
                 }
+
                 is TomlHeaderOwner -> {
                     val tableName = table.header.key?.segments?.firstOrNull()?.text ?: return
                     val existingKeys = table.entries.mapTo(HashSet()) { it.key.text }
                     schema.entriesForTable(tableName).filter { it.key !in existingKeys }
                 }
+
                 else -> return
             }
+
             else -> return
         }
 
-        result.addAllElements(variants.map { entry ->
-            LookupElementBuilder.create(entry, entry.key).withInsertHandler(TomlKeyInsertionHandler(keyValue))
-        })
+        result.addAllElements(
+            variants.map { entry ->
+                LookupElementBuilder.create(entry, entry.key).withInsertHandler(TomlKeyInsertionHandler(keyValue))
+            }
+        )
     }
 }
 
