@@ -26,6 +26,7 @@ import com.demonwav.mcdev.toml.TomlStringValueInsertionHandler
 import com.demonwav.mcdev.toml.inModsTomlKey
 import com.demonwav.mcdev.toml.inModsTomlValueWithKey
 import com.demonwav.mcdev.toml.platform.forge.ModsTomlSchema
+import com.demonwav.mcdev.toml.toml.TomlKeyInsertionHandler
 import com.demonwav.mcdev.util.isAncestorOf
 import com.intellij.codeInsight.completion.CompletionContributor
 import com.intellij.codeInsight.completion.CompletionParameters
@@ -88,6 +89,7 @@ object ModsTomlKeyCompletionProvider : CompletionProvider<CompletionParameters>(
 
         val keySegment = parameters.position.parent as? TomlKeySegment ?: return
         val key = keySegment.parent as? TomlKey ?: return
+        val keyValue = key.parent as? TomlKeyValue ?: return
         val table = key.parentOfType<TomlKeyValueOwner>()
         val variants: Collection<TomlSchemaEntry> = when (val parent = key.parent) {
             is TomlTableHeader -> {
@@ -118,7 +120,9 @@ object ModsTomlKeyCompletionProvider : CompletionProvider<CompletionParameters>(
             else -> return
         }
 
-        result.addAllElements(variants.map { entry -> LookupElementBuilder.create(entry, entry.key) })
+        result.addAllElements(variants.map { entry ->
+            LookupElementBuilder.create(entry, entry.key).withInsertHandler(TomlKeyInsertionHandler(keyValue))
+        })
     }
 }
 
