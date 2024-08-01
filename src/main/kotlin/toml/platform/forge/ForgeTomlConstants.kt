@@ -18,17 +18,12 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.demonwav.mcdev.platform.neoforge.util
+package com.demonwav.mcdev.toml.platform.forge
 
-object NeoForgeConstants {
+import com.demonwav.mcdev.platform.forge.util.ForgeConstants
+import com.demonwav.mcdev.platform.neoforge.util.NeoForgeConstants
 
-    const val MOD_ANNOTATION = "net.neoforged.fml.common.Mod"
-    const val SUBSCRIBE_EVENT = "net.neoforged.bus.api.SubscribeEvent"
-    const val EVENT_BUS_SUBSCRIBER = "net.neoforged.fml.common.Mod.EventBusSubscriber"
-    const val FML_EVENT = "net.neoforged.fml.event.IModBusEvent"
-    const val EVENTBUS_EVENT = "net.neoforged.bus.api.Event"
-    const val NETWORK_MESSAGE = "net.neoforged.neoforge.network.simple.SimpleMessage"
-    const val MCMOD_INFO = "mcmod.info"
-    const val PACK_MCMETA = "pack.mcmeta"
-    const val MODS_TOML = "neoforge.mods.toml"
+object ForgeTomlConstants {
+
+    val FILE_NAMES = setOf(ForgeConstants.MODS_TOML, NeoForgeConstants.MODS_TOML)
 }

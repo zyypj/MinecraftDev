@@ -20,7 +20,6 @@
 
 package com.demonwav.mcdev.toml.platform.forge
 
-import com.demonwav.mcdev.platform.forge.util.ForgeConstants
 import com.demonwav.mcdev.toml.TomlSchemaEntry
 import com.intellij.lang.documentation.DocumentationMarkup
 import com.intellij.lang.documentation.DocumentationProvider
@@ -107,7 +106,7 @@ class ModsTomlDocumentationProvider : DocumentationProvider {
     }
 
     private fun isModsToml(element: PsiElement?): Boolean =
-        element?.containingFile?.virtualFile?.name == ForgeConstants.MODS_TOML
+        element?.containingFile?.virtualFile?.name in ForgeTomlConstants.FILE_NAMES
 
     private class TomlSchemaKeyElement(
         val key: String,
