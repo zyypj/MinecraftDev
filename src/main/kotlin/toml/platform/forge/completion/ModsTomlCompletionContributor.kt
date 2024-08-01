@@ -21,6 +21,7 @@
 package com.demonwav.mcdev.toml.platform.forge.completion
 
 import com.demonwav.mcdev.platform.forge.util.ForgeConstants
+import com.demonwav.mcdev.toml.TomlSchemaEntry
 import com.demonwav.mcdev.toml.TomlStringValueInsertionHandler
 import com.demonwav.mcdev.toml.inModsTomlKey
 import com.demonwav.mcdev.toml.inModsTomlValueWithKey
@@ -88,7 +89,7 @@ object ModsTomlKeyCompletionProvider : CompletionProvider<CompletionParameters>(
         val keySegment = parameters.position.parent as? TomlKeySegment ?: return
         val key = keySegment.parent as? TomlKey ?: return
         val table = key.parentOfType<TomlKeyValueOwner>()
-        val variants = when (val parent = key.parent) {
+        val variants: Collection<TomlSchemaEntry> = when (val parent = key.parent) {
             is TomlTableHeader -> {
                 if (key != parent.key?.segments?.firstOrNull()) {
                     return
@@ -98,22 +99,26 @@ object ModsTomlKeyCompletionProvider : CompletionProvider<CompletionParameters>(
                     is TomlTable -> false
                     else -> return
                 }
-                schema.topLevelKeys(isArray) - table.entries.mapTo(HashSet()) { it.key.text }
+                val existingKeys = table.entries.mapTo(HashSet()) { it.key.text }
+                schema.topLevelEntries(isArray).filter { it.key !in existingKeys }
             }
             is TomlKeyValue -> when (table) {
                 null -> {
-                    schema.topLevelEntries.map { it.key } -
+                    val existingKeys =
                         key.containingFile.children.filterIsInstance<TomlKeyValue>().mapTo(HashSet()) { it.key.text }
+                    schema.topLevelEntries.filter { it.key !in existingKeys }
                 }
                 is TomlHeaderOwner -> {
                     val tableName = table.header.key?.segments?.firstOrNull()?.text ?: return
-                    schema.keysForTable(tableName) - table.entries.mapTo(HashSet()) { it.key.text }
+                    val existingKeys = table.entries.mapTo(HashSet()) { it.key.text }
+                    schema.entriesForTable(tableName).filter { it.key !in existingKeys }
                 }
                 else -> return
             }
             else -> return
         }
-        result.addAllElements(variants.map(LookupElementBuilder::create))
+
+        result.addAllElements(variants.map { entry -> LookupElementBuilder.create(entry, entry.key) })
     }
 }
 
