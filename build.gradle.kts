@@ -118,7 +118,6 @@ dependencies {
 
     implementation(libs.mixinExtras.expressions)
     testLibs(libs.mixinExtras.common)
-    implementation("org.ow2.asm:asm-util:9.3")
 
     // Kotlin
     implementation(kotlin("stdlib-jdk8"))
