@@ -27,7 +27,7 @@ import com.intellij.openapi.application.EDT
 import com.intellij.openapi.application.ModalityState
 import com.intellij.openapi.application.asContextElement
 import com.intellij.openapi.observable.properties.PropertyGraph
-import com.intellij.util.namedChildScope
+import com.intellij.platform.util.coroutines.namedChildScope
 import kotlin.coroutines.CoroutineContext
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

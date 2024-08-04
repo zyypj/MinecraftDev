@@ -25,8 +25,8 @@ import com.intellij.openapi.components.service
 import com.intellij.openapi.diagnostic.thisLogger
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.startup.ProjectActivity
+import com.intellij.platform.util.coroutines.namedChildScope
 import com.intellij.util.application
-import com.intellij.util.namedChildScope
 import kotlinx.coroutines.CoroutineScope
 
 @Service
