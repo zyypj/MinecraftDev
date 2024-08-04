@@ -18,18 +18,12 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.demonwav.mcdev.platform.velocity.util
+package com.demonwav.mcdev.toml.platform.forge
 
-import com.demonwav.mcdev.util.SemanticVersion
+import com.demonwav.mcdev.platform.forge.util.ForgeConstants
+import com.demonwav.mcdev.platform.neoforge.util.NeoForgeConstants
 
-object VelocityConstants {
+object ForgeTomlConstants {
 
-    const val PLUGIN_ANNOTATION = "com.velocitypowered.api.plugin.Plugin"
-    const val SUBSCRIBE_ANNOTATION = "com.velocitypowered.api.event.Subscribe"
-    const val POST_ORDER = "com.velocitypowered.api.event.PostOrder"
-    const val KYORI_TEXT_COLOR = "net.kyori.text.format.TextColor"
-
-    val API_2 = SemanticVersion.release(2)
-    val API_3 = SemanticVersion.release(3)
-    val API_4 = SemanticVersion.release(4)
+    val FILE_NAMES = setOf(ForgeConstants.MODS_TOML, NeoForgeConstants.MODS_TOML)
 }

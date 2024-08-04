@@ -118,7 +118,6 @@ dependencies {
 
     implementation(libs.mixinExtras.expressions)
     testLibs(libs.mixinExtras.common)
-    implementation("org.ow2.asm:asm-util:9.3")
 
     // Kotlin
     implementation(kotlin("stdlib-jdk8"))
@@ -298,10 +297,9 @@ tasks.processResources {
 tasks.test {
     dependsOn(tasks.jar, testLibs)
     useJUnitPlatform()
-    doFirst {
-        testLibs.resolvedConfiguration.resolvedArtifacts.forEach {
-            systemProperty("testLibs.${it.name}", it.file.absolutePath)
-        }
+
+    testLibs.resolvedConfiguration.resolvedArtifacts.forEach {
+        systemProperty("testLibs.${it.name}", it.file.absolutePath)
     }
     systemProperty("NO_FS_ROOTS_ACCESS_CHECK", "true")
     systemProperty("java.awt.headless", "true")

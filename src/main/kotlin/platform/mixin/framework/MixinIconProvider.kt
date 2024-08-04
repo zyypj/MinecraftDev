@@ -18,18 +18,22 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.demonwav.mcdev.platform.velocity.util
+package com.demonwav.mcdev.platform.mixin.framework
 
-import com.demonwav.mcdev.util.SemanticVersion
+import com.demonwav.mcdev.MinecraftSettings
+import com.demonwav.mcdev.asset.MixinAssets
+import com.demonwav.mcdev.platform.mixin.util.isMixin
+import com.intellij.ide.IconLayerProvider
+import com.intellij.openapi.util.Iconable
+import com.intellij.psi.PsiClass
+import javax.swing.Icon
 
-object VelocityConstants {
+class MixinIconProvider : IconLayerProvider {
+    override fun getLayerIcon(element: Iconable, isLocked: Boolean): Icon? =
+        MixinAssets.MIXIN_MARK.takeIf {
+            MinecraftSettings.instance.mixinClassIcon && element is PsiClass && element.isMixin
+        }
 
-    const val PLUGIN_ANNOTATION = "com.velocitypowered.api.plugin.Plugin"
-    const val SUBSCRIBE_ANNOTATION = "com.velocitypowered.api.event.Subscribe"
-    const val POST_ORDER = "com.velocitypowered.api.event.PostOrder"
-    const val KYORI_TEXT_COLOR = "net.kyori.text.format.TextColor"
-
-    val API_2 = SemanticVersion.release(2)
-    val API_3 = SemanticVersion.release(3)
-    val API_4 = SemanticVersion.release(4)
+    override fun getLayerDescription(): String =
+        "Mixin class"
 }
