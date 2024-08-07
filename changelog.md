@@ -11,6 +11,13 @@
 - Inspection highlighting discouraged instruction shifts
 - Inspections for when @Inject local capture is unused and for when they can be replaced with @Local
 - [#2306](https://github.com/minecraft-dev/MinecraftDev/issues/2306) Use mixin icon for mixin classes
+- Documentation while completing keys in mods.toml
+- mods.toml support for neoforge.mods.toml
+- Automatically insert an `=` after completing a mods.toml key
+
+### Changed
+
+- [#2353](https://github.com/minecraft-dev/MinecraftDev/issues/2353) Move "Method must not be static" error message to static keyword ([#2354](https://github.com/minecraft-dev/MinecraftDev/pull/2354))
 
 ### Fixed
 
@@ -20,6 +27,7 @@
 - [#2163](https://github.com/minecraft-dev/MinecraftDev/issues/2163) `@ModifyVariable` method signature checking with `STORE`
 - [#2282](https://github.com/minecraft-dev/MinecraftDev/issues/2282) Mixin support confusion with `$` and `.` separators in class names
 - Recent NeoModDev version import errors
+- Recommended Artifact ID value was not sanitized properly
 
 ## [1.8.0]
 
