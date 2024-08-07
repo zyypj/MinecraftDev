@@ -82,7 +82,16 @@ class CreatorTemplateProcessor(
         private set
 
     private var properties: MutableMap<String, CreatorProperty<*>> = mutableMapOf()
-    private var context: CreatorContext = CreatorContext(propertyGraph, properties, wizardContext)
+    var context: CreatorContext = CreatorContext(propertyGraph, properties, wizardContext)
+
+    fun initBuiltinProperties() {
+        val projectNameProperty = externalPropertyProvider.projectNameProperty
+        properties["PROJECT_NAME"] = ExternalCreatorProperty(
+            context = context,
+            graphProperty = projectNameProperty,
+            valueType = String::class.java
+        )
+    }
 
     fun createOptionsPanel(template: LoadedTemplate): DialogPanel? {
         properties = mutableMapOf()
@@ -92,12 +101,7 @@ class CreatorTemplateProcessor(
             return null
         }
 
-        val projectNameProperty = externalPropertyProvider.projectNameProperty
-        properties["PROJECT_NAME"] = ExternalCreatorProperty(
-            context = context,
-            graphProperty = projectNameProperty,
-            valueType = String::class.java
-        )
+        initBuiltinProperties()
 
         return panel {
             val reporter = TemplateValidationReporterImpl()
@@ -120,7 +124,7 @@ class CreatorTemplateProcessor(
         }
     }
 
-    private fun setupTemplate(
+    fun setupTemplate(
         template: LoadedTemplate,
         reporter: TemplateValidationReporterImpl
     ): List<Consumer<Panel>> {
@@ -141,6 +145,11 @@ class CreatorTemplateProcessor(
             properties
         } catch (t: Throwable) {
             if (t is ControlFlowException) {
+                throw t
+            }
+
+            if (t is TemplateValidationException && application.isUnitTestMode) {
+                // Rethrowing makes the exception properly catchable while not polluting the test outputs
                 throw t
             }
 

@@ -28,4 +28,8 @@ data class CreatorContext(
     val graph: PropertyGraph,
     val properties: Map<String, CreatorProperty<*>>,
     val wizardContext: WizardContext,
-)
+) {
+
+    @Suppress("UNCHECKED_CAST")
+    fun <T> property(name: String): CreatorProperty<T> = properties[name] as CreatorProperty<T>
+}
