@@ -59,7 +59,7 @@ class ReplacePropertyDerivation(
                 return null
             }
 
-            if (parents.size > 2) {
+            if (parents.size > 1) {
                 reporter.warn("More than one parent defined")
             }
 
