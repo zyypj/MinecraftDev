@@ -74,7 +74,8 @@ class StringCreatorPropertyTest : CreatorTemplateProcessorTestBase() {
                     "parameters": {
                       "regex": "[^a-z0-9-_]+",
                       "replacement": "_",
-                      "maxLength": 32
+                      "maxLength": 32,
+                      "lowercase": true
                     }
                   }
                 }
