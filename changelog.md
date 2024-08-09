@@ -28,6 +28,7 @@
 - [#2282](https://github.com/minecraft-dev/MinecraftDev/issues/2282) Mixin support confusion with `$` and `.` separators in class names
 - Recent NeoModDev version import errors
 - Recommended Artifact ID value was not sanitized properly
+- NeoForge versions in the Architectury were not being matched correctly for the first version of a major Minecraft release
 
 ## [1.8.0]
 
