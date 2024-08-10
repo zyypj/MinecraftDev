@@ -1,6 +1,6 @@
 # Minecraft Development for IntelliJ
 
-## [Unreleased]
+## [1.8.1] - 2024-08-10
 
 ### Added
 
@@ -30,7 +30,7 @@
 - Recommended Artifact ID value was not sanitized properly
 - NeoForge versions in the Architectury were not being matched correctly for the first version of a major Minecraft release
 
-## [1.8.0]
+## [1.8.0] - 2024-07-14
 
 This release contains two major features:
 - Support for MixinExtras expressions ([#2274](https://github.com/minecraft-dev/MinecraftDev/pull/2274))
