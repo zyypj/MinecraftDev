@@ -109,7 +109,21 @@ repositories {
         }
     }
     mavenCentral()
-    maven("https://repo.spongepowered.org/maven/")
+    maven("https://repo.spongepowered.org/maven/") {
+        content {
+            includeGroup("org.spongepowered")
+        }
+    }
+    maven("https://hub.spigotmc.org/nexus/content/repositories/snapshots/") {
+        content {
+            includeGroup("org.spigotmc")
+        }
+    }
+    maven("https://oss.sonatype.org/content/repositories/snapshots/") {
+        content {
+            includeGroup("net.md-5")
+        }
+    }
 }
 
 dependencies {
@@ -141,6 +155,8 @@ dependencies {
 
     testLibs(libs.test.mockJdk)
     testLibs(libs.test.mixin)
+    testLibs(libs.test.spigotapi)
+    testLibs(libs.test.bungeecord)
     testLibs(libs.test.spongeapi) {
         artifact {
             classifier = "shaded"
@@ -212,6 +228,7 @@ intellij {
         "ByteCodeViewer",
         "org.intellij.intelliLang",
         "properties",
+        "org.jetbrains.plugins.yaml",
         // needed dependencies for unit tests
         "junit"
     )
@@ -327,7 +344,12 @@ license {
     exclude("META-INF/plugin.xml") // https://youtrack.jetbrains.com/issue/IDEA-345026
     include(endings.map { "**/*.$it" })
 
-    exclude("com/demonwav/mcdev/platform/mixin/invalidInjectorMethodSignature/*.java")
+    val projectDir = layout.projectDirectory.asFile
+    exclude {
+        it.file.toRelativeString(projectDir)
+            .replace("\\", "/")
+            .startsWith("src/test/resources")
+    }
 
     this.tasks {
         register("gradle") {
