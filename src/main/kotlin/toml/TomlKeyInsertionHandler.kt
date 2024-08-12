@@ -18,7 +18,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.demonwav.mcdev.toml.toml
+package com.demonwav.mcdev.toml
 
 import com.intellij.codeInsight.AutoPopupController
 import com.intellij.codeInsight.completion.InsertHandler
