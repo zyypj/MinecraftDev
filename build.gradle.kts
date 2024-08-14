@@ -368,6 +368,14 @@ license {
                 },
             )
         }
+        register("mixinTestData") {
+            files.from(
+                project.fileTree(project.projectDir.resolve("mixin-test-data")) {
+                    include("**/*.java", "**/*.kts")
+                    exclude("**/build/**")
+                },
+            )
+        }
         register("grammars") {
             files.from(project.fileTree("src/main/grammars"))
         }
