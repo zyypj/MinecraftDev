@@ -142,7 +142,6 @@ class MinecraftFacet(
     }
 
     private fun register(type: AbstractModuleType<*>): AbstractModule {
-        type.performCreationSettingSetup(module.project)
         val module = type.generateModule(this)
         moduleMap[type] = module
         return module
