@@ -30,7 +30,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.tree.IFileElementType
 import com.intellij.psi.tree.TokenSet
-import io.mcdev.obfex.formats.enigma.gen.EnigmaParser
+import io.mcdev.obfex.formats.enigma.gen.parser.EnigmaParser
 import io.mcdev.obfex.formats.enigma.gen.psi.EnigmaTypes
 
 class EnigmaParserDefinition : ParserDefinition {

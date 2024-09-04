@@ -19,7 +19,7 @@
  */
 
 {
-    parserClass="io.mcdev.obfex.formats.srg.gen.SrgParser"
+    parserClass="io.mcdev.obfex.formats.srg.gen.parser.SrgParser"
 
     extends="com.intellij.extapi.psi.ASTWrapperPsiElement"
 

@@ -19,7 +19,7 @@
  */
 
 {
-    parserClass="io.mcdev.obfex.formats.proguard.gen.ProGuardParser"
+    parserClass="io.mcdev.obfex.formats.proguard.gen.parser.ProGuardParser"
 
     extends="com.intellij.extapi.psi.ASTWrapperPsiElement"
 

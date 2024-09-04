@@ -19,7 +19,7 @@
  */
 
 {
-    parserClass="io.mcdev.obfex.formats.tinyv2.gen.TinyV2Parser"
+    parserClass="io.mcdev.obfex.formats.tinyv2.gen.parser.TinyV2Parser"
 
     extends="com.intellij.extapi.psi.ASTWrapperPsiElement"
 

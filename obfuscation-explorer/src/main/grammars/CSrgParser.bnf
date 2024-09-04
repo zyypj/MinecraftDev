@@ -19,7 +19,7 @@
  */
 
 {
-    parserClass="io.mcdev.obfex.formats.csrg.gen.CSrgParser"
+    parserClass="io.mcdev.obfex.formats.csrg.gen.parser.CSrgParser"
 
     extends="com.intellij.extapi.psi.ASTWrapperPsiElement"
 

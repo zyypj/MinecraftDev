@@ -19,7 +19,7 @@
  */
 
 {
-    parserClass="io.mcdev.obfex.formats.jam.gen.JamParser"
+    parserClass="io.mcdev.obfex.formats.jam.gen.parser.JamParser"
 
     extends="com.intellij.extapi.psi.ASTWrapperPsiElement"
 

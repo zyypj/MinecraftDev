@@ -19,7 +19,7 @@
  */
 
 {
-    parserClass="io.mcdev.obfex.formats.enigma.gen.EnigmaParser"
+    parserClass="io.mcdev.obfex.formats.enigma.gen.parser.EnigmaParser"
 
     extends="com.intellij.extapi.psi.ASTWrapperPsiElement"
     parserUtilClass='io.mcdev.obfex.formats.enigma.lang.psi.EnigmaParserUtil'

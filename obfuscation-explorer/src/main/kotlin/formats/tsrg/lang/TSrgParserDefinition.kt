@@ -31,7 +31,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.tree.IFileElementType
 import com.intellij.psi.tree.TokenSet
-import io.mcdev.obfex.formats.tsrg.gen.TSrgParser
+import io.mcdev.obfex.formats.tsrg.gen.parser.TSrgParser
 import io.mcdev.obfex.formats.tsrg.gen.psi.TSrgTypes
 import io.mcdev.obfex.formats.tsrg.lang.psi.TSrgLexerAdapter
 

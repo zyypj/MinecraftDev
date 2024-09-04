@@ -31,7 +31,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.tree.IFileElementType
 import com.intellij.psi.tree.TokenSet
-import io.mcdev.obfex.formats.jam.gen.JamParser
+import io.mcdev.obfex.formats.jam.gen.parser.JamParser
 import io.mcdev.obfex.formats.jam.gen.psi.JamTypes
 import io.mcdev.obfex.formats.jam.lang.psi.JamLexerAdapter
 

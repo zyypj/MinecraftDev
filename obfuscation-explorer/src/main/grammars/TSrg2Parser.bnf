@@ -19,7 +19,7 @@
  */
 
 {
-    parserClass="io.mcdev.obfex.formats.tsrg2.gen.TSrg2Parser"
+    parserClass="io.mcdev.obfex.formats.tsrg2.gen.parser.TSrg2Parser"
 
     extends="com.intellij.extapi.psi.ASTWrapperPsiElement"
     parserUtilClass='io.mcdev.obfex.formats.util.sigws.SignificantWhitespaceParserUtil'

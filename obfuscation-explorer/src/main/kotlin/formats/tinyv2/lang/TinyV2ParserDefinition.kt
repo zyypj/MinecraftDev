@@ -31,7 +31,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.tree.IFileElementType
 import com.intellij.psi.tree.TokenSet
-import io.mcdev.obfex.formats.tinyv2.gen.TinyV2Parser
+import io.mcdev.obfex.formats.tinyv2.gen.parser.TinyV2Parser
 import io.mcdev.obfex.formats.tinyv2.gen.psi.TinyV2Types
 import io.mcdev.obfex.formats.tinyv2.lang.psi.TinyV2LexerAdapter
 

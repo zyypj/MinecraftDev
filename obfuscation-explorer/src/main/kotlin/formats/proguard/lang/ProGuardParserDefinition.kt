@@ -30,7 +30,7 @@ import com.intellij.psi.PsiElement
 import com.intellij.psi.PsiFile
 import com.intellij.psi.tree.IFileElementType
 import com.intellij.psi.tree.TokenSet
-import io.mcdev.obfex.formats.proguard.gen.ProGuardParser
+import io.mcdev.obfex.formats.proguard.gen.parser.ProGuardParser
 import io.mcdev.obfex.formats.proguard.gen.psi.ProGuardTypes
 import io.mcdev.obfex.formats.proguard.lang.psi.ProGuardLexerAdapter
 
