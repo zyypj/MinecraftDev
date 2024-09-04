@@ -39,7 +39,8 @@ import org.jetbrains.yaml.psi.YamlPsiElementVisitor
 
 class PluginYmlInspection : LocalInspectionTool() {
 
-    override fun getStaticDescription(): @Nls String? = "Reports issues in Bukkit-like plugin.yml files"
+    @Nls
+    override fun getStaticDescription(): String? = "Reports issues in Bukkit-like plugin.yml files"
 
     override fun buildVisitor(holder: ProblemsHolder, isOnTheFly: Boolean): PsiElementVisitor {
         val module = holder.file.findModule() ?: return PsiElementVisitor.EMPTY_VISITOR

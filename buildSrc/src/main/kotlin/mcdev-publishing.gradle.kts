@@ -19,7 +19,7 @@
  */
 
 plugins {
-    id("org.jetbrains.intellij")
+    id("org.jetbrains.intellij.platform")
 }
 
 tasks.publishPlugin {

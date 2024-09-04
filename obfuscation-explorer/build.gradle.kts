@@ -18,12 +18,14 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+import org.jetbrains.intellij.platform.gradle.TestFrameworkType
+
 plugins {
     java
     groovy
     idea
     id(libs.plugins.kotlin.get().pluginId)
-    id(libs.plugins.intellij.get().pluginId)
+    id(libs.plugins.intellij.platform.get().pluginId)
     id(libs.plugins.licenser.get().pluginId)
     id(libs.plugins.ktlint.get().pluginId)
     `mcdev-core`
@@ -43,10 +45,21 @@ val grammarKit by configurations
 group = "io.mcdev.obfex"
 version = "$ideaVersionName-$coreVersion"
 
-intellij {
-    plugins.addProvider(libs.versions.psiPlugin.map { "PsiViewer:$it" })
+intellijPlatform {
+    projectName = "Obfuscation Explorer"
+}
 
-    pluginName.set("Obfuscation Explorer")
+dependencies {
+    intellijPlatform {
+        intellijIdeaCommunity(ideaVersionName)
+
+        plugin(libs.versions.psiPlugin.map { "PsiViewer:$it" })
+
+        testFramework(TestFrameworkType.JUnit5)
+        testFramework(TestFrameworkType.Platform)
+    }
+
+    testCompileOnly(libs.junit.vintage) // Hack to get tests to compile and run
 }
 
 val generateSrgLexer by lexer("SrgLexer", "io/mcdev/obfex/formats/srg/gen")
@@ -106,10 +119,6 @@ sourceSets.main { java.srcDir(generate) }
 
 // Remove gen directory on clean
 tasks.clean { delete(generate) }
-
-tasks.buildSearchableOptions {
-    enabled = false
-}
 
 license {
     tasks {

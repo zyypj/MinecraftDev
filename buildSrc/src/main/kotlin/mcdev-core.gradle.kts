@@ -25,20 +25,20 @@ import java.net.URI
 import java.util.Properties
 import java.util.zip.ZipFile
 import org.cadixdev.gradle.licenser.header.HeaderStyle
+import org.gradle.accessors.dm.LibrariesForLibs
 import org.gradle.kotlin.dsl.maven
 import org.gradle.kotlin.dsl.repositories
 import org.gradle.kotlin.dsl.withType
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-import org.gradle.accessors.dm.LibrariesForLibs
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.dsl.KotlinVersion
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import org.jlleitschuh.gradle.ktlint.tasks.BaseKtLintCheckTask
 
 plugins {
     java
     idea
     id("org.jetbrains.kotlin.jvm")
-    id("org.jetbrains.intellij")
+    id("org.jetbrains.intellij.platform")
     id("org.cadixdev.licenser")
     id("org.jlleitschuh.gradle.ktlint")
 }
@@ -95,6 +95,10 @@ repositories {
             includeGroup("net.md-5")
         }
     }
+
+    intellijPlatform {
+        defaultRepositories()
+    }
 }
 
 val libs = the<LibrariesForLibs>()
@@ -108,14 +112,11 @@ dependencies {
     testRuntimeOnly(libs.junit.platform.launcher)
 }
 
-intellij {
-    // IntelliJ IDEA dependency
-    version.set(libs.versions.intellij.ide)
+intellijPlatform {
+    sandboxContainer = layout.projectDirectory.dir(".sandbox")
 
-    updateSinceUntilBuild.set(true)
-    downloadSources.set(providers.gradleProperty("downloadIdeaSources").map { it.toBoolean() })
-
-    sandboxDir.set(layout.projectDirectory.dir(".sandbox").toString())
+    instrumentCode = false
+    buildSearchableOptions = false
 }
 
 license {
@@ -129,7 +130,7 @@ license {
 
 idea {
     module {
-        excludeDirs.add(file(intellij.sandboxDir.get()))
+        excludeDirs.add(file(intellijPlatform.sandboxContainer.get()))
     }
 }
 

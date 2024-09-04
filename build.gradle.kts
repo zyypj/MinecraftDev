@@ -22,17 +22,19 @@ import org.gradle.internal.jvm.Jvm
 import org.jetbrains.changelog.Changelog
 import org.jetbrains.gradle.ext.settings
 import org.jetbrains.gradle.ext.taskTriggers
-import org.jetbrains.intellij.tasks.PrepareSandboxTask
+import org.jetbrains.intellij.platform.gradle.TestFrameworkType
+import org.jetbrains.intellij.platform.gradle.tasks.PrepareSandboxTask
 
 plugins {
     java
     groovy
     idea
     id(libs.plugins.kotlin.get().pluginId)
-    id(libs.plugins.intellij.get().pluginId)
+    id(libs.plugins.intellij.platform.get().pluginId)
     id(libs.plugins.licenser.get().pluginId)
     id(libs.plugins.ktlint.get().pluginId)
     id(libs.plugins.changelog.get().pluginId)
+    alias(libs.plugins.idea.ext)
     `mcdev-core`
     `mcdev-parsing`
     `mcdev-publishing`
@@ -57,6 +59,7 @@ val gradleToolingExtensionSourceSet: SourceSet = sourceSets.create("gradle-tooli
 val gradleToolingExtensionJar = tasks.register<Jar>(gradleToolingExtensionSourceSet.jarTaskName) {
     from(gradleToolingExtensionSourceSet.output)
     archiveClassifier.set("gradle-tooling-extension")
+    exclude("META-INF/plugin.xml")
 }
 
 val templatesSourceSet: SourceSet = sourceSets.create("templates") {
@@ -99,6 +102,29 @@ dependencies {
 
     implementation(libs.bundles.fuel)
 
+    intellijPlatform {
+        intellijIdeaCommunity(ideaVersionName)
+
+        // Bundled plugin dependencies
+        bundledPlugin("com.intellij.java")
+        bundledPlugin("org.jetbrains.idea.maven")
+        bundledPlugin("com.intellij.gradle")
+        bundledPlugin("org.intellij.groovy")
+        bundledPlugin("ByteCodeViewer")
+        bundledPlugin("org.intellij.intelliLang")
+        bundledPlugin("com.intellij.properties")
+
+        // Optional dependencies
+        bundledPlugin("org.jetbrains.kotlin")
+        bundledPlugin("org.toml.lang")
+        bundledPlugin("org.jetbrains.plugins.yaml")
+
+        testFramework(TestFrameworkType.JUnit5)
+        testFramework(TestFrameworkType.Plugin.Java)
+
+        pluginVerifier()
+    }
+
     testLibs(libs.test.mockJdk)
     testLibs(libs.test.mixin)
     testLibs(libs.test.spigotapi)
@@ -123,6 +149,7 @@ dependencies {
     gradleToolingExtension(libs.annotations)
 
     testImplementation(libs.junit.api)
+    testCompileOnly(libs.junit.vintage) // Hack to get tests to compile
     testRuntimeOnly(libs.junit.entine)
     testRuntimeOnly(libs.junit.platform.launcher)
 }
@@ -160,33 +187,19 @@ changelog {
     path = "changelog.md"
 }
 
-intellij {
-    // Bundled plugin dependencies
-    plugins.addAll(
-        "java",
-        "maven",
-        "gradle",
-        "Groovy",
-        "Kotlin",
-        "ByteCodeViewer",
-        "org.intellij.intelliLang",
-        "properties",
-        "org.jetbrains.plugins.yaml",
-        // needed dependencies for unit tests
-        "junit"
-    )
-    plugins.addProvider(libs.versions.pluginToml.map { "org.toml.lang:$it" })
+intellijPlatform {
+    projectName = "Minecraft Development"
 
-    pluginName.set("Minecraft Development")
+    pluginVerification {
+        ides {
+            recommended()
+        }
+    }
 }
 
 tasks.patchPluginXml {
     val changelog = project.changelog
     changeNotes = changelog.render(Changelog.OutputType.HTML)
-}
-
-tasks.runPluginVerifier {
-    ideVersions.addAll("IC-$ideaVersionName")
 }
 
 // Compile classes to be loaded into the Gradle VM to Java 5 to match Groovy
@@ -354,17 +367,4 @@ tasks.runIde {
     // Set these properties to test different languages
     // systemProperty("user.language", "fr")
     // systemProperty("user.country", "FR")
-}
-
-tasks.buildSearchableOptions {
-    // not working atm
-    enabled = false
-}
-
-tasks.instrumentCode {
-    enabled = false
-}
-
-tasks.instrumentedJar {
-    enabled = false
 }

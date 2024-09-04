@@ -8,14 +8,15 @@ fuel = "2.3.1"
 licenser = "0.6.1"
 ktlint = "10.3.0"
 changelog = "2.2.0"
-intellij-plugin = "1.17.2"
+intellij-plugin = "2.0.1"
 intellij-ide = "2023.2.2"
-pluginToml = "232.8660.88"
+idea-ext = "1.1.8"
 psiPlugin = "232.2-SNAPSHOT"
 
 [plugins]
 kotlin = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
-intellij = { id = "org.jetbrains.intellij", version.ref = "intellij-plugin" }
+intellij-platform = { id = "org.jetbrains.intellij.platform", version.ref = "intellij-plugin" }
+idea-ext = { id = "org.jetbrains.gradle.plugin.idea-ext", version.ref = "idea-ext" }
 licenser = { id = "org.cadixdev.licenser", version.ref = "licenser" }
 ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlint" }
 changelog = { id = "org.jetbrains.changelog", version.ref = "changelog" }
@@ -25,7 +26,7 @@ kotlin-plugin = { module = "org.jetbrains.kotlin.jvm:org.jetbrains.kotlin.jvm.gr
 kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib-jdk8", version.ref = "kotlin" }
 kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect", version.ref = "kotlin" }
 
-intellij-plugin = { module = "org.jetbrains.intellij:org.jetbrains.intellij.gradle.plugin", version.ref = "intellij-plugin" }
+intellij-plugin = { module = "org.jetbrains.intellij.platform:org.jetbrains.intellij.platform.gradle.plugin", version.ref = "intellij-plugin" }
 licenser-plugin = { module = "org.cadixdev.licenser:org.cadixdev.licenser.gradle.plugin", version.ref = "licenser" }
 ktlint-plugin = { module = "org.jlleitschuh.gradle.ktlint:org.jlleitschuh.gradle.ktlint.gradle.plugin", version.ref = "ktlint" }
 changelog-plugin = { module = "org.jetbrains.changelog:org.jetbrains.changelog.gradle.plugin", version.ref = "changelog" }
@@ -68,6 +69,7 @@ test-nbt = "com.demonwav.mcdev:all-types-nbt:1.0"
 
 junit-api = { module = "org.junit.jupiter:junit-jupiter-api", version.ref = "junit" }
 junit-entine = { module = "org.junit.jupiter:junit-jupiter-engine", version.ref = "junit" }
+junit-vintage = { module = "org.junit.vintage:junit-vintage-engine", version.ref = "junit" }
 junit-platform-launcher = { module = "org.junit.platform:junit-platform-launcher", version.ref = "junit-platform" }
 
 mixinExtras-common = "io.github.llamalad7:mixinextras-common:0.5.0-beta.1"
