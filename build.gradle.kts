@@ -232,10 +232,8 @@ tasks.processResources {
 tasks.test {
     dependsOn(tasks.jar, testLibs)
 
-    doFirst {
-        testLibs.resolvedConfiguration.resolvedArtifacts.forEach {
-            systemProperty("testLibs.${it.name}", it.file.absolutePath)
-        }
+    testLibs.resolvedConfiguration.resolvedArtifacts.forEach {
+        systemProperty("testLibs.${it.name}", it.file.absolutePath)
     }
     systemProperty("NO_FS_ROOTS_ACCESS_CHECK", "true")
     systemProperty("java.awt.headless", "true")
