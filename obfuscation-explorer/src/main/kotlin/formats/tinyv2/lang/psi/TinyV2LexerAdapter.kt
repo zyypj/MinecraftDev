@@ -18,15 +18,9 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-plugins {
-    id("org.gradle.toolchains.foojay-resolver-convention") version("0.7.0")
-}
+package io.mcdev.obfex.formats.tinyv2.lang.psi
 
-rootProject.name = "MinecraftDev"
-include("obfuscation-explorer")
+import com.intellij.lexer.FlexAdapter
+import io.mcdev.obfex.formats.tinyv2.gen.TinyV2Lexer
 
-enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
-
-include("mixin-test-data")
-
-startParameter.warningMode = WarningMode.All
+class TinyV2LexerAdapter : FlexAdapter(TinyV2Lexer())

@@ -18,15 +18,18 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-plugins {
-    id("org.gradle.toolchains.foojay-resolver-convention") version("0.7.0")
+package io.mcdev.obfex.formats.tsrg2.lang
+
+import com.intellij.psi.tree.IElementType
+import com.intellij.psi.tree.TokenSet
+import io.mcdev.obfex.formats.tsrg2.gen.psi.TSrg2Types
+import io.mcdev.obfex.formats.tsrg2.lang.psi.TSrg2LexerAdapter
+import io.mcdev.obfex.formats.util.sigws.SignificantWhitespaceLexer
+
+class TSrg2LayoutLexer : SignificantWhitespaceLexer(TSrg2LexerAdapter()) {
+
+    override val newlineTokens: TokenSet = TokenSet.create(TSrg2Types.CRLF)
+    override val tabTokens: TokenSet = TokenSet.create(TSrg2Types.TAB)
+    override val virtualOpenToken: IElementType = TSrg2Types.VIRTUAL_OPEN
+    override val virtualCloseToken: IElementType = TSrg2Types.VIRTUAL_CLOSE
 }
-
-rootProject.name = "MinecraftDev"
-include("obfuscation-explorer")
-
-enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
-
-include("mixin-test-data")
-
-startParameter.warningMode = WarningMode.All

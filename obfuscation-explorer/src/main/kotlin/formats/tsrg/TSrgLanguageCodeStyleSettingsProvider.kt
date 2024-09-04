@@ -18,15 +18,23 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-plugins {
-    id("org.gradle.toolchains.foojay-resolver-convention") version("0.7.0")
+package io.mcdev.obfex.formats.tsrg
+
+import io.mcdev.obfex.formats.tsrg.lang.TSrgLanguage
+import io.mcdev.obfex.formats.util.TabCodeStyleSettingsProvider
+import org.intellij.lang.annotations.Language
+
+class TSrgLanguageCodeStyleSettingsProvider : TabCodeStyleSettingsProvider() {
+    override fun getLanguage() = TSrgLanguage
+    override fun getCodeSample(settingsType: SettingsType) = SAMPLE
 }
 
-rootProject.name = "MinecraftDev"
-include("obfuscation-explorer")
-
-enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
-
-include("mixin-test-data")
-
-startParameter.warningMode = WarningMode.All
+@Language("TSRG")
+private const val SAMPLE = """
+class_1 class1Ns0Rename
+	field_1 field1Ns0Rename
+	method_1 ()I method1Ns0Rename
+class_1${'$'}class_2 class1Ns0Rename${'$'}class2Ns0Rename
+	field_2 field2Ns0Rename
+class_3 class3Ns0Rename
+"""

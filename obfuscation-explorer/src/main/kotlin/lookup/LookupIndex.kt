@@ -18,15 +18,19 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-plugins {
-    id("org.gradle.toolchains.foojay-resolver-convention") version("0.7.0")
+package io.mcdev.obfex.lookup
+
+import kotlin.reflect.KClass
+
+/**
+ * Index for optimized queries from [MultiLookupTable].
+ */
+interface LookupIndex<T, K> {
+
+    /**
+     * Query the index using the given key.
+     */
+    fun query(key: K?): MultiLookupTable<T>
+
+    fun <L : LookupIndex<*, *>> unwrap(type: KClass<L>): L?
 }
-
-rootProject.name = "MinecraftDev"
-include("obfuscation-explorer")
-
-enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
-
-include("mixin-test-data")
-
-startParameter.warningMode = WarningMode.All

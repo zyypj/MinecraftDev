@@ -18,15 +18,13 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-plugins {
-    id("org.gradle.toolchains.foojay-resolver-convention") version("0.7.0")
+package io.mcdev.obfex.formats.tinyv1.lang
+
+import com.intellij.extapi.psi.PsiFileBase
+import com.intellij.openapi.fileTypes.FileType
+import com.intellij.psi.FileViewProvider
+
+class TinyV1File(viewProvider: FileViewProvider) : PsiFileBase(viewProvider, TinyV1Language) {
+    override fun getFileType(): FileType = TinyV1FileType
+    override fun toString(): String = TinyV1FileType.description
 }
-
-rootProject.name = "MinecraftDev"
-include("obfuscation-explorer")
-
-enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
-
-include("mixin-test-data")
-
-startParameter.warningMode = WarningMode.All

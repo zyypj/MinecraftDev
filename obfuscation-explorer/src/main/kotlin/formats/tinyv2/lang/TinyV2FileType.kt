@@ -18,15 +18,16 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-plugins {
-    id("org.gradle.toolchains.foojay-resolver-convention") version("0.7.0")
+package io.mcdev.obfex.formats.tinyv2.lang
+
+import com.intellij.openapi.fileTypes.LanguageFileType
+import io.mcdev.obfex.ObfIcons
+import javax.swing.Icon
+
+object TinyV2FileType : LanguageFileType(TinyV2Language) {
+
+    override fun getName(): String = "Tiny v2"
+    override fun getDescription(): String = "Tiny v2 obfuscation mapping file"
+    override fun getDefaultExtension(): String = "tiny"
+    override fun getIcon(): Icon = ObfIcons.TINY_V2_ICON
 }
-
-rootProject.name = "MinecraftDev"
-include("obfuscation-explorer")
-
-enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
-
-include("mixin-test-data")
-
-startParameter.warningMode = WarningMode.All

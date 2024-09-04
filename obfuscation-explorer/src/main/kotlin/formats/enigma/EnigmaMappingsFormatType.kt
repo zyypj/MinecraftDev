@@ -18,15 +18,14 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-plugins {
-    id("org.gradle.toolchains.foojay-resolver-convention") version("0.7.0")
+package io.mcdev.obfex.formats.enigma
+
+import io.mcdev.obfex.ObfIcons
+import io.mcdev.obfex.formats.MappingsFormatType
+import javax.swing.Icon
+
+object EnigmaMappingsFormatType : MappingsFormatType("Enigma") {
+
+    override val icon: Icon = ObfIcons.ENIGMA_ICON
+    override val name: String = "Enigma"
 }
-
-rootProject.name = "MinecraftDev"
-include("obfuscation-explorer")
-
-enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
-
-include("mixin-test-data")
-
-startParameter.warningMode = WarningMode.All

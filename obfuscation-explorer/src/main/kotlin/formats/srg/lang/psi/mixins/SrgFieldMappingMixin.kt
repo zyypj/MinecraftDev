@@ -18,15 +18,19 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-plugins {
-    id("org.gradle.toolchains.foojay-resolver-convention") version("0.7.0")
+package io.mcdev.obfex.formats.srg.lang.psi.mixins
+
+import com.intellij.psi.PsiElement
+import io.mcdev.obfex.formats.srg.gen.psi.SrgExtendedFieldMapping
+import io.mcdev.obfex.formats.srg.gen.psi.SrgMappingPart
+import io.mcdev.obfex.formats.srg.gen.psi.SrgStandardFieldMapping
+
+interface SrgFieldMappingMixin : PsiElement {
+    fun getExtendedFieldMapping(): SrgExtendedFieldMapping?
+
+    fun getStandardFieldMapping(): SrgStandardFieldMapping?
+
+    val mappingPartList: List<SrgMappingPart>
+    val obfName: SrgMappingPart?
+    val deobfName: SrgMappingPart?
 }
-
-rootProject.name = "MinecraftDev"
-include("obfuscation-explorer")
-
-enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
-
-include("mixin-test-data")
-
-startParameter.warningMode = WarningMode.All

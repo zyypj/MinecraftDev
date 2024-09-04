@@ -18,15 +18,16 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-plugins {
-    id("org.gradle.toolchains.foojay-resolver-convention") version("0.7.0")
+package io.mcdev.obfex.facet.config
+
+import io.mcdev.obfex.formats.MappingsFormatType
+import java.net.URI
+
+data class MappingsTableRow(
+    val type: MappingsFormatType? = null,
+    val uri: URI? = null,
+) {
+    companion object {
+        val NULL = MappingsTableRow()
+    }
 }
-
-rootProject.name = "MinecraftDev"
-include("obfuscation-explorer")
-
-enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
-
-include("mixin-test-data")
-
-startParameter.warningMode = WarningMode.All

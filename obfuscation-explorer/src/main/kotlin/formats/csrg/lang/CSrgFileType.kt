@@ -18,15 +18,16 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-plugins {
-    id("org.gradle.toolchains.foojay-resolver-convention") version("0.7.0")
+package io.mcdev.obfex.formats.csrg.lang
+
+import com.intellij.openapi.fileTypes.LanguageFileType
+import io.mcdev.obfex.ObfIcons
+import javax.swing.Icon
+
+object CSrgFileType : LanguageFileType(CSrgLanguage) {
+
+    override fun getName(): String = "CSRG"
+    override fun getDescription(): String = "CSRG obfuscation mapping file"
+    override fun getDefaultExtension(): String = "csrg"
+    override fun getIcon(): Icon = ObfIcons.CSRG_ICON
 }
-
-rootProject.name = "MinecraftDev"
-include("obfuscation-explorer")
-
-enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
-
-include("mixin-test-data")
-
-startParameter.warningMode = WarningMode.All

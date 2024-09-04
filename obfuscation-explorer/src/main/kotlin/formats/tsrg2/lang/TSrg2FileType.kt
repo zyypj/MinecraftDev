@@ -18,15 +18,16 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-plugins {
-    id("org.gradle.toolchains.foojay-resolver-convention") version("0.7.0")
+package io.mcdev.obfex.formats.tsrg2.lang
+
+import com.intellij.openapi.fileTypes.LanguageFileType
+import io.mcdev.obfex.ObfIcons
+import javax.swing.Icon
+
+object TSrg2FileType : LanguageFileType(TSrg2Language) {
+
+    override fun getName(): String = "TSRGv2"
+    override fun getDescription(): String = "TSRGv2 obfuscation mapping file"
+    override fun getDefaultExtension(): String = "tsrg"
+    override fun getIcon(): Icon = ObfIcons.TSRG2_ICON
 }
-
-rootProject.name = "MinecraftDev"
-include("obfuscation-explorer")
-
-enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
-
-include("mixin-test-data")
-
-startParameter.warningMode = WarningMode.All

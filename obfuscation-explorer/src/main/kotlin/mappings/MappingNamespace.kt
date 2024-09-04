@@ -18,15 +18,22 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-plugins {
-    id("org.gradle.toolchains.foojay-resolver-convention") version("0.7.0")
+package io.mcdev.obfex.mappings
+
+/**
+ * A namespace is a collection of names in a mapping. A single mapping set can have an arbitrary number of namespaces,
+ * each namespace providing a different name for the same unique element.
+ */
+data class MappingNamespace(
+    val name: String,
+    val index: Int,
+    val associatedSet: MappingSet?,
+) {
+    companion object {
+        const val UNNAMED_FROM: String = "from"
+        const val UNNAMED_TO: String = "to"
+
+        fun unnamedFrom(set: MappingSet) = set.namespaceOf(UNNAMED_FROM)
+        fun unnamedTo(set: MappingSet) = set.namespaceOf(UNNAMED_TO)
+    }
 }
-
-rootProject.name = "MinecraftDev"
-include("obfuscation-explorer")
-
-enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
-
-include("mixin-test-data")
-
-startParameter.warningMode = WarningMode.All

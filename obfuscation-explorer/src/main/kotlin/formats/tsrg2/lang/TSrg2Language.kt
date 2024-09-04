@@ -18,15 +18,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-plugins {
-    id("org.gradle.toolchains.foojay-resolver-convention") version("0.7.0")
-}
+package io.mcdev.obfex.formats.tsrg2.lang
 
-rootProject.name = "MinecraftDev"
-include("obfuscation-explorer")
+import com.intellij.lang.Language
 
-enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
-
-include("mixin-test-data")
-
-startParameter.warningMode = WarningMode.All
+object TSrg2Language : Language("TSRGv2")

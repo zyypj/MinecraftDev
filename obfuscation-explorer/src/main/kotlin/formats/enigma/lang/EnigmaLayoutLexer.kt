@@ -18,15 +18,18 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-plugins {
-    id("org.gradle.toolchains.foojay-resolver-convention") version("0.7.0")
+package io.mcdev.obfex.formats.enigma.lang
+
+import com.intellij.psi.tree.IElementType
+import com.intellij.psi.tree.TokenSet
+import io.mcdev.obfex.formats.enigma.gen.psi.EnigmaTypes
+import io.mcdev.obfex.formats.enigma.lang.psi.EnigmaLexerAdapter
+import io.mcdev.obfex.formats.util.sigws.SignificantWhitespaceLexer
+
+class EnigmaLayoutLexer : SignificantWhitespaceLexer(EnigmaLexerAdapter()) {
+
+    override val newlineTokens: TokenSet = TokenSet.create(EnigmaTypes.CRLF)
+    override val tabTokens: TokenSet = TokenSet.create(EnigmaTypes.TAB)
+    override val virtualOpenToken: IElementType = EnigmaTypes.VIRTUAL_OPEN
+    override val virtualCloseToken: IElementType = EnigmaTypes.VIRTUAL_CLOSE
 }
-
-rootProject.name = "MinecraftDev"
-include("obfuscation-explorer")
-
-enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
-
-include("mixin-test-data")
-
-startParameter.warningMode = WarningMode.All

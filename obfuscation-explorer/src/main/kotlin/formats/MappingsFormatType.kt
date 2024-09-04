@@ -18,15 +18,24 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-plugins {
-    id("org.gradle.toolchains.foojay-resolver-convention") version("0.7.0")
+package io.mcdev.obfex.formats
+
+import com.intellij.util.xmlb.Converter as IConverter
+import javax.swing.Icon
+import org.jetbrains.annotations.NonNls
+
+abstract class MappingsFormatType(@param:NonNls val id: String) {
+
+    abstract val icon: Icon
+    abstract val name: String
+
+    class Converter : IConverter<MappingsFormatType>() {
+        override fun toString(value: MappingsFormatType): String? {
+            return value.id
+        }
+
+        override fun fromString(value: String): MappingsFormatType? {
+            return MappingsFormatTypeManager.get().registeredTypes.firstOrNull { it.id == value }
+        }
+    }
 }
-
-rootProject.name = "MinecraftDev"
-include("obfuscation-explorer")
-
-enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
-
-include("mixin-test-data")
-
-startParameter.warningMode = WarningMode.All

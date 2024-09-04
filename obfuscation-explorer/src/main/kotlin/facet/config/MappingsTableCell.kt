@@ -18,15 +18,22 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-plugins {
-    id("org.gradle.toolchains.foojay-resolver-convention") version("0.7.0")
+package io.mcdev.obfex.facet.config
+
+import com.intellij.ui.dsl.builder.panel
+import io.mcdev.obfex.mappings.MappingsDefinition
+import io.mcdev.obfex.mappings.MappingsFile
+import java.awt.Component
+
+object MappingsTableCell {
+
+    fun createComponent(def: MappingsDefinition): Component = panel {
+        row {
+            when (val s = def.source) {
+                is MappingsFile -> {
+                    icon(s.type.icon)
+                }
+            }
+        }
+    }
 }
-
-rootProject.name = "MinecraftDev"
-include("obfuscation-explorer")
-
-enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
-
-include("mixin-test-data")
-
-startParameter.warningMode = WarningMode.All
