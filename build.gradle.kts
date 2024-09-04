@@ -26,13 +26,7 @@ import org.jetbrains.intellij.platform.gradle.TestFrameworkType
 import org.jetbrains.intellij.platform.gradle.tasks.PrepareSandboxTask
 
 plugins {
-    java
     groovy
-    idea
-    id(libs.plugins.kotlin.get().pluginId)
-    id(libs.plugins.intellij.platform.get().pluginId)
-    id(libs.plugins.licenser.get().pluginId)
-    id(libs.plugins.ktlint.get().pluginId)
     id(libs.plugins.changelog.get().pluginId)
     alias(libs.plugins.idea.ext)
     `mcdev-core`

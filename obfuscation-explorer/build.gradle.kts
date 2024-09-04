@@ -21,13 +21,6 @@
 import org.jetbrains.intellij.platform.gradle.TestFrameworkType
 
 plugins {
-    java
-    groovy
-    idea
-    id(libs.plugins.kotlin.get().pluginId)
-    id(libs.plugins.intellij.platform.get().pluginId)
-    id(libs.plugins.licenser.get().pluginId)
-    id(libs.plugins.ktlint.get().pluginId)
     `mcdev-core`
     `mcdev-parsing`
     `mcdev-publishing`
