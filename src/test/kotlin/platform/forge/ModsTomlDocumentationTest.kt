@@ -20,42 +20,32 @@
 
 package com.demonwav.mcdev.platform.forge
 
+import com.demonwav.mcdev.framework.BaseMinecraftTest
 import com.demonwav.mcdev.toml.platform.forge.ModsTomlDocumentationProvider
-import com.intellij.testFramework.fixtures.BasePlatformTestCase
+import com.intellij.testFramework.UsefulTestCase.assertSameLines
 import com.intellij.util.application
 import org.intellij.lang.annotations.Language
-import org.junit.jupiter.api.AfterEach
-import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 
 @DisplayName("Mods Toml Documentation Tests")
-class ModsTomlDocumentationTest : BasePlatformTestCase() {
-
-    @BeforeEach
-    override fun setUp() {
-        super.setUp()
-    }
-
-    @AfterEach
-    override fun tearDown() {
-        super.tearDown()
-    }
+class ModsTomlDocumentationTest : BaseMinecraftTest() {
 
     private fun doTestDoc(
         @Language("TOML") modsToml: String,
         expectedDoc: String
     ) {
-        myFixture.configureByText("mods.toml", modsToml)
+        fixture.configureByText("mods.toml", modsToml)
 
         application.runReadAction {
-            val originalElement = myFixture.elementAtCaret
+            val originalElement = fixture.elementAtCaret
             val provider = ModsTomlDocumentationProvider()
             val element = provider.getCustomDocumentationElement(
-                myFixture.editor,
-                myFixture.file,
+                fixture.editor,
+                fixture.file,
                 originalElement,
-                myFixture.caretOffset
+                fixture.caretOffset
             ) ?: originalElement
 
             val doc = provider.generateDoc(element, originalElement)
@@ -69,9 +59,9 @@ class ModsTomlDocumentationTest : BasePlatformTestCase() {
         lookupString: String,
         expectedDoc: String
     ) {
-        myFixture.configureByText("mods.toml", modsToml)
+        fixture.configureByText("mods.toml", modsToml)
 
-        val lookupElements = myFixture.completeBasic()
+        val lookupElements = fixture.completeBasic()
         val licenseElement = lookupElements.find { it.lookupString == lookupString }
         assertNotNull(licenseElement)
 
@@ -79,7 +69,7 @@ class ModsTomlDocumentationTest : BasePlatformTestCase() {
         assertNotNull(obj)
 
         val documentationProvider = ModsTomlDocumentationProvider()
-        val docElement = documentationProvider.getDocumentationElementForLookupItem(psiManager, obj, null)
+        val docElement = documentationProvider.getDocumentationElementForLookupItem(fixture.psiManager, obj, null)
         assertNotNull(docElement)
 
         val doc = documentationProvider.generateDoc(docElement!!, null)
