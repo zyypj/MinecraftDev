@@ -103,7 +103,7 @@ dependencies {
     implementation(libs.bundles.fuel)
 
     intellijPlatform {
-        intellijIdeaCommunity(ideaVersionName)
+        intellijIdeaCommunity(libs.versions.intellij.ide)
 
         // Bundled plugin dependencies
         bundledPlugin("com.intellij.java")

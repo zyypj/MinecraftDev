@@ -33,10 +33,8 @@ plugins {
     `mcdev-publishing`
 }
 
-val ideaVersion: String by project
 val ideaVersionName: String by project
 val coreVersion: String by project
-val downloadIdeaSources: String by project
 
 val jflex by configurations
 val jflexSkeleton by configurations
@@ -51,7 +49,7 @@ intellijPlatform {
 
 dependencies {
     intellijPlatform {
-        intellijIdeaCommunity(ideaVersionName)
+        intellijIdeaCommunity(libs.versions.intellij.ide)
 
         plugin(libs.versions.psiPlugin.map { "PsiViewer:$it" })
 
