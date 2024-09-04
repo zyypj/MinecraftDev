@@ -141,11 +141,6 @@ dependencies {
     gradleToolingExtension(libs.groovy)
     gradleToolingExtension(libs.gradleToolingExtension)
     gradleToolingExtension(libs.annotations)
-
-    testImplementation(libs.junit.api)
-    testCompileOnly(libs.junit.vintage) // Hack to get tests to compile
-    testRuntimeOnly(libs.junit.entine)
-    testRuntimeOnly(libs.junit.platform.launcher)
 }
 
 val artifactType = Attribute.of("artifactType", String::class.java)

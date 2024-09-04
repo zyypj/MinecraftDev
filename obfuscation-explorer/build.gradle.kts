@@ -49,8 +49,6 @@ dependencies {
         testFramework(TestFrameworkType.JUnit5)
         testFramework(TestFrameworkType.Platform)
     }
-
-    testCompileOnly(libs.junit.vintage) // Hack to get tests to compile and run
 }
 
 val generateSrgLexer by lexer("SrgLexer", "io/mcdev/obfex/formats/srg/gen")

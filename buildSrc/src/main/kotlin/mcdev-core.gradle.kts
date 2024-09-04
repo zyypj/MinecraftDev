@@ -108,7 +108,8 @@ dependencies {
     implementation(libs.bundles.coroutines)
 
     testImplementation(libs.junit.api)
-    testRuntimeOnly(libs.junit.entine)
+    testCompileOnly(libs.junit.vintage) // Hack to get tests to compile and run
+    testRuntimeOnly(libs.junit.engine)
     testRuntimeOnly(libs.junit.platform.launcher)
 }
 
