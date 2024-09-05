@@ -43,6 +43,5 @@ dependencies {
     implementation(libs.kotlin.plugin)
     implementation(libs.intellij.plugin)
     implementation(libs.licenser.plugin)
-    implementation(libs.ktlint.plugin)
     implementation(libs.changelog.plugin)
 }

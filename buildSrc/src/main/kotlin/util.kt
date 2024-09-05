@@ -18,22 +18,13 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import java.io.ByteArrayOutputStream
-import org.cadixdev.gradle.licenser.LicenseExtension
-import org.gradle.api.JavaVersion
 import org.gradle.api.Project
-import org.gradle.api.provider.ListProperty
-import org.gradle.api.provider.Provider
-import org.gradle.api.tasks.JavaExec
 import org.gradle.api.tasks.TaskContainer
 import org.gradle.api.tasks.util.PatternFilterable
 import org.gradle.kotlin.dsl.RegisteringDomainObjectDelegateProviderWithTypeAndAction
 import org.gradle.kotlin.dsl.getValue
 import org.gradle.kotlin.dsl.provideDelegate
 import org.gradle.kotlin.dsl.registering
-import org.gradle.kotlin.dsl.configure
-
-fun <T> ListProperty<T>.addProvider(provider: Provider<T>) = add(provider)
 
 typealias TaskDelegate<T> = RegisteringDomainObjectDelegateProviderWithTypeAndAction<out TaskContainer, T>
 
@@ -74,6 +65,3 @@ fun Project.parser(bnf: String, pack: String): TaskDelegate<ParserExec> {
         this.grammarKit.setFrom(grammarKit)
     }
 }
-
-data class DepList(val intellijVersion: String, val intellijVersionName: String, val deps: List<Dep>)
-data class Dep(val groupId: String, val artifactId: String, val version: String)

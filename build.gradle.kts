@@ -143,33 +143,6 @@ dependencies {
     gradleToolingExtension(libs.annotations)
 }
 
-val artifactType = Attribute.of("artifactType", String::class.java)
-val filtered = Attribute.of("filtered", Boolean::class.javaObjectType)
-
-dependencies {
-    attributesSchema {
-        attribute(filtered)
-    }
-    artifactTypes.getByName("jar") {
-        attributes.attribute(filtered, false)
-    }
-
-    registerTransform(Filter::class) {
-        from.attribute(filtered, false).attribute(artifactType, "jar")
-        to.attribute(filtered, true).attribute(artifactType, "jar")
-
-        parameters {
-            ideaVersion.set(libs.versions.intellij.ide)
-            ideaVersionName.set(providers.gradleProperty("ideaVersionName"))
-            depsFile.set(layout.projectDirectory.file(".gradle/intellij-deps.json"))
-        }
-    }
-}
-
-configurations.compileClasspath {
-    attributes.attribute(filtered, true)
-}
-
 changelog {
     version = coreVersion
     groups.empty()
@@ -255,7 +228,7 @@ license {
             .startsWith("src/test/resources")
     }
 
-    this.tasks {
+    tasks {
         register("gradle") {
             files.from(
                 fileTree(project.projectDir) {
