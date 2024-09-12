@@ -97,7 +97,7 @@ val libs = the<LibrariesForLibs>()
 dependencies {
     implementation(libs.kotlin.stdlib)
     implementation(libs.kotlin.reflect)
-    compileOnly(libs.bundles.coroutines)
+    implementation(libs.bundles.coroutines)
 
     testImplementation(libs.junit.api)
     testCompileOnly(libs.junit.vintage) // Hack to get tests to compile and run
