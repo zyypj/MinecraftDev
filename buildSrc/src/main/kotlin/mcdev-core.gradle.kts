@@ -32,6 +32,17 @@ plugins {
     id("org.cadixdev.licenser")
 }
 
+val ideaVersionName: String by project
+val coreVersion: String by project
+val buildNumber: String? by project
+
+version = "$ideaVersionName-$coreVersion"
+
+// Build numbers are used for nightlies
+if (buildNumber != null) {
+    version = "$version-$buildNumber"
+}
+
 java {
     toolchain {
         languageVersion.set(JavaLanguageVersion.of(17))
