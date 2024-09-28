@@ -110,7 +110,7 @@ dependencies {
     }
 
     testImplementation(libs.junit.api)
-    testCompileOnly(libs.junit.vintage) // Hack to get tests to compile and run
+    testImplementation(libs.junit.vintage) // Hack to get tests to compile and run
     testRuntimeOnly(libs.junit.engine)
     testRuntimeOnly(libs.junit.platform.launcher)
 }
