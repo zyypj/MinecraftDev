@@ -322,6 +322,12 @@ tasks.runIde {
         systemProperty("idea.ProcessCanceledException", "disabled")
         systemProperty("idea.debug.mode", "true")
     }
+
+    // Kotlin K2 is enabled by default, uncomment to switch to K1
+    // jvmArgumentProviders += CommandLineArgumentProvider {
+    //     listOf("-Didea.kotlin.plugin.use.k2=false")
+    // }
+
     // Set these properties to test different languages
     // systemProperty("user.language", "fr")
     // systemProperty("user.country", "FR")
