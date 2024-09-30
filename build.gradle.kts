@@ -306,12 +306,13 @@ tasks.clean { delete(generate) }
 
 tasks.withType<PrepareSandboxTask> {
     pluginJar.set(tasks.jar.get().archiveFile)
+    val pluginDirName = intellijPlatform.projectName.get()
     from(externalAnnotationsJar) {
-        into("Minecraft Development/lib/resources")
+        into("$pluginDirName/lib/resources")
     }
     from("templates") {
         exclude(".git")
-        into("Minecraft Development/lib/resources/builtin-templates")
+        into("$pluginDirName/lib/resources/builtin-templates")
     }
 }
 
