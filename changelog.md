@@ -13,6 +13,7 @@
 - Mixin injection signature fix preview
 - Loom 1.8 support
 - K2 mode compatibility
+- [#2385](https://github.com/minecraft-dev/MinecraftDev/issues/2385) ModDevGradle Vanilla-Mode support
 
 ### Changed
 
