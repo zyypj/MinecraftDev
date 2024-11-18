@@ -25,6 +25,7 @@ import com.intellij.openapi.projectRoots.JavaSdkVersion
 
 @TemplateApi
 object MinecraftVersions {
+    val MC1_8_8 = SemanticVersion.release(1, 8, 8)
     val MC1_12_2 = SemanticVersion.release(1, 12, 2)
     val MC1_14_4 = SemanticVersion.release(1, 14, 4)
     val MC1_16 = SemanticVersion.release(1, 16)
